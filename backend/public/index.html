@@ -943,7 +943,8 @@
             background: var(--white);
             border: 1px solid var(--grey-200);
             border-radius: 2px 12px 12px 12px;
-            white-space: pre-wrap;
+            white-space: normal;
+            overflow-x: auto;
         }
 
         .msg.user .msg-bubble {
@@ -1058,7 +1059,7 @@
             height: 16px;
         }
 
-        /* CONNECTING STATE */
+        /* CONNECTING BAR */
         .connecting-bar {
             background: var(--grey-100);
             border-bottom: 1px solid var(--grey-200);
@@ -1206,6 +1207,150 @@
             border-top: 1px solid var(--grey-100);
         }
 
+        /* MARKDOWN IN BUBBLES */
+        .msg-bubble p {
+            margin: 4px 0;
+        }
+
+        .msg-bubble h3 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            margin: 14px 0 6px;
+            color: var(--grey-900);
+        }
+
+        .msg-bubble h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 12px 0 5px;
+            color: var(--grey-900);
+        }
+
+        .msg-bubble h5 {
+            font-size: 13px;
+            font-weight: 600;
+            margin: 10px 0 4px;
+            color: var(--grey-800);
+        }
+
+        .msg-bubble ul,
+        .msg-bubble ol {
+            padding-left: 20px;
+            margin: 6px 0;
+        }
+
+        .msg-bubble li {
+            margin: 3px 0;
+            line-height: 1.5;
+        }
+
+        .msg-bubble strong {
+            font-weight: 600;
+        }
+
+        .msg-bubble em {
+            font-style: italic;
+        }
+
+        .msg-bubble code {
+            background: var(--grey-100);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .md-table {
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 12px;
+            width: 100%;
+            min-width: 300px;
+        }
+
+        .md-table th,
+        .md-table td {
+            padding: 7px 10px;
+            border: 1px solid var(--grey-200);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .md-table th {
+            background: var(--grey-100);
+            font-weight: 600;
+            color: var(--grey-800);
+        }
+
+        .md-table tr:nth-child(even) td {
+            background: var(--grey-50);
+        }
+
+        /* NEXT STEP CARD */
+        .next-step-card {
+            align-self: stretch;
+            margin: 4px 0;
+        }
+
+        .next-step-inner {
+            background: linear-gradient(135deg, var(--red-light) 0%, var(--white) 60%);
+            border: 1px solid var(--red-mid);
+            border-radius: var(--radius-lg);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .next-step-meta {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .next-step-eyebrow {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--red);
+            margin-bottom: 3px;
+        }
+
+        .next-step-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--grey-900);
+        }
+
+        .next-step-block {
+            font-size: 11px;
+            color: var(--grey-600);
+            margin-top: 2px;
+        }
+
+        .next-step-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .next-step-dismiss {
+            font-size: 12px;
+            color: var(--grey-400);
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+            transition: border-color 0.15s;
+        }
+
+        .next-step-dismiss:hover {
+            border-color: var(--grey-200);
+            color: var(--grey-600);
+        }
+
         /* ANIMATIONS */
         @keyframes fadeUp {
             from {
@@ -1328,7 +1473,7 @@
 
             <div class="isdp-grid">
                 <div class="isdp-card status-active"
-                    onclick="openChat('CareConnect+ Patient Portal','Block 3 · Gap & Conflict Detection',3,10)">
+                    onclick="openChat('CareConnect+ Patient Portal','Block 3 · Gap &amp; Conflict Detection',3,10)">
                     <div class="card-top">
                         <div class="card-icon icon-active">🔐</div><span class="card-status">Awaiting input</span>
                     </div>
@@ -1353,13 +1498,16 @@
                     </div>
                     <div class="missing-section">
                         <div class="missing-label">Open items</div>
-                        <div class="tag-row"><span class="tag tag-warn">Backup docs missing</span><span
-                                class="tag tag-warn">IAM
-                                unclear</span><span class="tag tag-ok">Architecture ✓</span></div>
+                        <div class="tag-row">
+                            <span class="tag tag-warn">Backup docs missing</span>
+                            <span class="tag tag-warn">IAM unclear</span>
+                            <span class="tag tag-ok">Architecture ✓</span>
+                        </div>
                     </div>
-                    <div class="card-footer"><span class="footer-date">Updated 2h ago</span><span
-                            class="footer-action">Continue
-                            →</span></div>
+                    <div class="card-footer">
+                        <span class="footer-date">Updated 2h ago</span>
+                        <span class="footer-action">Continue →</span>
+                    </div>
                 </div>
 
                 <div class="isdp-card status-review"
@@ -1381,20 +1529,22 @@
                         <div class="step-dot step-pending"></div>
                     </div>
                     <div class="progress-section">
-                        <div class="progress-label"><span>Progress</span><span>73%</span></div>
+                        <div class="progress-label"><span>Progress</span><span>74%</span></div>
                         <div class="progress-bar">
                             <div class="progress-fill fill-review" style="width:74%"></div>
                         </div>
                     </div>
                     <div class="missing-section">
                         <div class="missing-label">Open items</div>
-                        <div class="tag-row"><span class="tag tag-warn">3 unsupported claims</span><span
-                                class="tag tag-ok">Scope
-                                confirmed ✓</span></div>
+                        <div class="tag-row">
+                            <span class="tag tag-warn">3 unsupported claims</span>
+                            <span class="tag tag-ok">Scope confirmed ✓</span>
+                        </div>
                     </div>
-                    <div class="card-footer"><span class="footer-date">Updated yesterday</span><span
-                            class="footer-action">Review
-                            →</span></div>
+                    <div class="card-footer">
+                        <span class="footer-date">Updated yesterday</span>
+                        <span class="footer-action">Review →</span>
+                    </div>
                 </div>
 
                 <div class="isdp-card status-draft"
@@ -1423,11 +1573,15 @@
                     </div>
                     <div class="missing-section">
                         <div class="missing-label">Open items</div>
-                        <div class="tag-row"><span class="tag tag-warn">Scope not confirmed</span><span
-                                class="tag tag-warn">Supplier docs needed</span></div>
+                        <div class="tag-row">
+                            <span class="tag tag-warn">Scope not confirmed</span>
+                            <span class="tag tag-warn">Supplier docs needed</span>
+                        </div>
                     </div>
-                    <div class="card-footer"><span class="footer-date">Created 3 days ago</span><span
-                            class="footer-action">Continue →</span></div>
+                    <div class="card-footer">
+                        <span class="footer-date">Created 3 days ago</span>
+                        <span class="footer-action">Continue →</span>
+                    </div>
                 </div>
 
                 <div class="new-card" onclick="openModal()">
@@ -1444,8 +1598,7 @@
                         <div class="activity-icon">✅</div>
                         <div class="activity-content">
                             <div class="activity-text"><strong>CareConnect+</strong> — Human Checkpoint 2 confirmed.
-                                Structure
-                                approved.</div>
+                                Structure approved.</div>
                             <div class="activity-time">2 hours ago</div>
                         </div>
                     </div>
@@ -1453,8 +1606,7 @@
                         <div class="activity-icon">⚠️</div>
                         <div class="activity-content">
                             <div class="activity-text"><strong>HR Self-Service</strong> — Evidence Validation flagged 3
-                                unsupported
-                                claims.</div>
+                                unsupported claims.</div>
                             <div class="activity-time">Yesterday, 14:32</div>
                         </div>
                     </div>
@@ -1462,8 +1614,7 @@
                         <div class="activity-icon">📄</div>
                         <div class="activity-content">
                             <div class="activity-text"><strong>Document Management</strong> — 2 documents uploaded.
-                                Classification
-                                complete.</div>
+                                Classification complete.</div>
                             <div class="activity-time">3 days ago</div>
                         </div>
                     </div>
@@ -1471,8 +1622,7 @@
                         <div class="activity-icon">🇩🇪</div>
                         <div class="activity-content">
                             <div class="activity-text"><strong>CareConnect+</strong> — German draft sections generated
-                                for 6 chapters.
-                            </div>
+                                for 6 chapters.</div>
                             <div class="activity-time">4 days ago</div>
                         </div>
                     </div>
@@ -1482,20 +1632,17 @@
                     <div class="alert-item alert-warn">
                         <div class="alert-icon">⚠️</div>
                         <div class="alert-text"><strong>CareConnect+</strong><br>Backup documentation missing. Gap
-                            detection
-                            blocked.</div>
+                            detection blocked.</div>
                     </div>
                     <div class="alert-item alert-warn">
                         <div class="alert-icon">⚠️</div>
                         <div class="alert-text"><strong>HR Self-Service</strong><br>3 statements could not be validated
-                            against
-                            source documents.</div>
+                            against source documents.</div>
                     </div>
                     <div class="alert-item alert-info">
                         <div class="alert-icon">💬</div>
                         <div class="alert-text"><strong>Document Management</strong><br>Scope Clarification waiting for
-                            your
-                            confirmation.</div>
+                            your confirmation.</div>
                     </div>
                 </div>
             </div>
@@ -1633,8 +1780,7 @@
         <div class="modal">
             <div class="modal-title">Start new ISDP</div>
             <div class="modal-sub">Enter your project details and the Document Classifier agent will guide you through
-                the
-                full workflow.</div>
+                the full workflow.</div>
             <div class="form-group">
                 <label class="form-label">Project / system name</label>
                 <input class="form-input" type="text" id="new-project-name" placeholder="e.g. Voting Platform v3">
@@ -1672,38 +1818,64 @@
     </div>
 
     <script>
-        // ── CONFIG ───────────────────────────────────
+        // ── CONFIG ────────────────────────────────────────────────────────────────
         const BACKEND = '';
+
+        // ── UPLOADED FILE STATE ───────────────────────────────────────────────────
+        let uploadedFiles = [];   // [{filename, text}]
+
+        // ── AGENT SEQUENCE (ordered workflow) ────────────────────────────────────
+        const AGENT_SEQUENCE = [
+            { name: 'Document Classifier', block: 1, blockName: 'Intake & Scoping' },
+            { name: 'Document Readiness', block: 1, blockName: 'Intake & Scoping' },
+            { name: 'Scope Clarification', block: 1, blockName: 'Intake & Scoping' },
+            { name: 'Reference & Reuse', block: 2, blockName: 'Structure & Reuse' },
+            { name: 'ISDP Template', block: 2, blockName: 'Structure & Reuse' },
+            { name: 'Standards Relevance', block: 2, blockName: 'Structure & Reuse' },
+            { name: 'Security Extraction', block: 3, blockName: 'Analysis & Mapping' },
+            { name: 'Schutzedarfsanalyse', block: 3, blockName: 'Analysis & Mapping' },
+            { name: 'ISDP Section Mapping', block: 3, blockName: 'Analysis & Mapping' },
+            { name: 'Gap & Conflict Detection', block: 3, blockName: 'Analysis & Mapping' },
+            { name: 'Clarification Questions', block: 3, blockName: 'Analysis & Mapping' },
+            { name: 'Standards Coverage', block: 4, blockName: 'Control & Draft' },
+            { name: 'Evidence Validation', block: 4, blockName: 'Control & Draft' },
+            { name: 'German Draft', block: 4, blockName: 'Control & Draft' },
+            { name: 'Quality Assurance', block: 4, blockName: 'Control & Draft' },
+            { name: 'Feedback Integration', block: 5, blockName: 'Closing' },
+            { name: 'Quality Scoring', block: 5, blockName: 'Closing' },
+            { name: 'Final Review', block: 5, blockName: 'Closing' },
+        ];
+
         const AGENT_IDS = {
             'Document Classifier': '62b4d465-83d9-4970-98ff-67b0fc5d2eac',
             'Document Readiness': '9bef9f25-5716-4a5f-8567-cc765212cef1',
             'Scope Clarification': 'f6d9fa20-3446-4686-8f3d-3699aa2241f9',
-            'Reference & Reuse Guidance': 'ea87b0ee-3583-4eb9-a07e-b94f3c3ceb00',
-            'ISDP Template / Structure': '774ac183-f358-44a8-b442-352efde87553',
+            'Reference & Reuse': 'ea87b0ee-3583-4eb9-a07e-b94f3c3ceb00',
+            'ISDP Template': '774ac183-f358-44a8-b442-352efde87553',
             'Standards Relevance': '678f2f54-33f4-402d-b135-792649d1baa1',
-            'Security Fact Extraction': '0a2fd43e-7b34-4dc8-86a9-cc979dc23c60',
+            'Security Extraction': '0a2fd43e-7b34-4dc8-86a9-cc979dc23c60',
             'Schutzedarfsanalyse': '0577de14-755d-47b9-8d84-3533f7da82df',
             'ISDP Section Mapping': '40a80939-1284-46c9-9afb-9c1db6f2eea8',
             'Gap & Conflict Detection': '3485704a-4657-4eb6-862c-5800e682f912',
-            'Clarification Question': 'e3911c32-b005-4b3c-9d3c-b0be66efcecb',
-            'Standards Coverage Check': '9fa4e134-1bf7-4ba8-ad7b-7221e00086b4',
+            'Clarification Questions': 'e3911c32-b005-4b3c-9d3c-b0be66efcecb',
+            'Standards Coverage': '9fa4e134-1bf7-4ba8-ad7b-7221e00086b4',
             'Evidence Validation': 'a0c63131-175a-4b30-bf1f-9bde0dd02d80',
-            'German Draft Generation': '04dcedb9-19c9-459d-a7a1-c65f9ca46ff0',
+            'German Draft': '04dcedb9-19c9-459d-a7a1-c65f9ca46ff0',
             'Quality Assurance': '39f293bb-db72-45e4-8319-9b493da207f6',
-            'User Feedback Integration': '45d63794-a3ef-4d4c-afbd-de67705f72e5',
+            'Feedback Integration': '45d63794-a3ef-4d4c-afbd-de67705f72e5',
             'Quality Scoring': '9c8675e1-1ac3-4f85-a5d7-837d65d1684f',
             'Final Review': '1595378f-4ac2-4086-8359-e7754b703c31',
         };
         const AGENT_NAMES = Object.keys(AGENT_IDS);
 
-        // ── STATE ─────────────────────────────────────
+        // ── STATE ─────────────────────────────────────────────────────────────────
         let currentThreadId = null;
         let currentAgentId = AGENT_IDS['Document Classifier'];
+        let currentAgentIndex = 0;   // index into AGENT_SEQUENCE
         let currentProject = null;
-        let uploadedFiles = [];   // speichert extrahierte Dokument-Texte
         let isSending = false;
 
-        // ── MODAL ─────────────────────────────────────
+        // ── MODAL ─────────────────────────────────────────────────────────────────
         function openModal() {
             document.getElementById('new-project-name').value = '';
             document.getElementById('file-list').innerHTML = '';
@@ -1720,7 +1892,7 @@
             for (const file of Array.from(files)) {
                 const row = document.createElement('div');
                 row.style.cssText = 'padding:4px 0;display:flex;align-items:center;gap:6px;font-size:12px;color:#2d2d2d';
-                row.innerHTML = `<span>📄</span><span>${file.name}</span><span id="fst-${file.name}" style="color:#9a9a9a">Wird hochgeladen…</span>`;
+                row.innerHTML = `<span>📄</span><span>${file.name}</span><span id="status-${file.name}" style="color:#9a9a9a">Wird hochgeladen…</span>`;
                 listEl.appendChild(row);
 
                 try {
@@ -1730,29 +1902,31 @@
                     const data = await res.json();
                     if (res.ok) {
                         uploadedFiles.push({ filename: data.filename, text: data.text });
-                        document.getElementById(`fst-${file.name}`).textContent = `✓ ${data.chars} Zeichen extrahiert`;
-                        document.getElementById(`fst-${file.name}`).style.color = '#166534';
+                        document.getElementById(`status-${file.name}`).textContent = `✓ ${data.chars} Zeichen extrahiert`;
+                        document.getElementById(`status-${file.name}`).style.color = '#166534';
                     } else {
-                        document.getElementById(`fst-${file.name}`).textContent = '⚠ Upload fehlgeschlagen';
-                        document.getElementById(`fst-${file.name}`).style.color = '#991b1b';
+                        document.getElementById(`status-${file.name}`).textContent = '⚠ Upload fehlgeschlagen';
+                        document.getElementById(`status-${file.name}`).style.color = '#991b1b';
                     }
                 } catch (e) {
-                    document.getElementById(`fst-${file.name}`).textContent = '⚠ ' + e.message;
-                    document.getElementById(`fst-${file.name}`).style.color = '#991b1b';
+                    document.getElementById(`status-${file.name}`).textContent = '⚠ ' + e.message;
+                    document.getElementById(`status-${file.name}`).style.color = '#991b1b';
                 }
             }
         }
 
-        // ── START WORKFLOW ────────────────────────────
+        // ── START WORKFLOW ────────────────────────────────────────────────────────
         async function startWorkflow() {
             const name = document.getElementById('new-project-name').value.trim();
             if (!name) { alert('Bitte Projektname eingeben.'); return; }
             closeModal();
             currentProject = name;
             currentThreadId = null;
+            currentAgentIndex = 0;
             currentAgentId = AGENT_IDS['Document Classifier'];
             openChatPage(name, 'Block 1 · Document Classifier', 1, 1);
 
+            // Build opening message — include extracted file content if any
             let msg = `Neues ISDP-Projekt: "${name}".`;
             if (uploadedFiles.length > 0) {
                 msg += `\n\nDer Nutzer hat folgende Dokumente hochgeladen:\n`;
@@ -1763,13 +1937,15 @@
             } else {
                 msg += ` Bitte stelle dich vor und frage nach dem System, für das ein ISDP erstellt werden soll.`;
             }
+
             await callAgent(msg);
         }
 
-        // ── OPEN / CLOSE CHAT ─────────────────────────
+        // ── OPEN / CLOSE CHAT ─────────────────────────────────────────────────────
         function openChat(title, blockLabel, activeBlock, activeAgent) {
             currentProject = title;
             currentThreadId = null;
+            currentAgentIndex = Math.max(0, activeAgent - 1);
             currentAgentId = AGENT_IDS[AGENT_NAMES[activeAgent - 1]] || AGENT_IDS['Document Classifier'];
             openChatPage(title, blockLabel, activeBlock, activeAgent);
             addAgentMessage('Welcome back to your ISDP project. How can I help you continue?');
@@ -1792,7 +1968,7 @@
             document.getElementById('dashboard-page').style.display = '';
         }
 
-        // ── SEND MESSAGE ──────────────────────────────
+        // ── SEND MESSAGE ──────────────────────────────────────────────────────────
         async function sendMessage() {
             if (isSending) return;
             const input = document.getElementById('chat-input');
@@ -1804,13 +1980,14 @@
             await callAgent(text);
         }
 
-        // ── CORE API CALL ─────────────────────────────
+        // ── CORE API CALL ─────────────────────────────────────────────────────────
         async function callAgent(message) {
             if (isSending) return;
             isSending = true;
             setSendDisabled(true);
             showConnecting('Agent is thinking…');
             addTypingIndicator();
+            document.getElementById('next-step-card')?.remove();
 
             try {
                 const res = await fetch(`${BACKEND}/api/chat`, {
@@ -1822,35 +1999,38 @@
                         thread_id: currentThreadId || undefined,
                     }),
                 });
+
                 const data = await res.json();
                 removeTypingIndicator();
                 hideConnecting();
+
                 if (!res.ok) {
                     addErrorMessage(data.detail || data.error || `Server error ${res.status}`);
                 } else {
                     if (data.thread_id) currentThreadId = data.thread_id;
                     addAgentMessage(data.response);
+                    addNextStepSuggestion();
                 }
+
             } catch (err) {
                 removeTypingIndicator();
                 hideConnecting();
-                addErrorMessage('Backend nicht erreichbar. Läuft der Server auf Port 8000?');
+                addErrorMessage('Backend not reachable. Is the server running on port 8000?');
             }
 
             isSending = false;
             setSendDisabled(false);
         }
 
-        // ── UI HELPERS ────────────────────────────────
+        // ── UI HELPERS ────────────────────────────────────────────────────────────
         function setSendDisabled(v) {
             document.getElementById('send-btn').disabled = v;
             document.getElementById('chat-input').disabled = v;
         }
 
         function showConnecting(text) {
-            const bar = document.getElementById('connecting-bar');
             document.getElementById('conn-text').textContent = text;
-            bar.style.display = 'flex';
+            document.getElementById('connecting-bar').style.display = 'flex';
         }
 
         function hideConnecting() {
@@ -1862,11 +2042,11 @@
             const el = document.createElement('div');
             el.className = 'msg user';
             el.innerHTML = `
-    <div class="msg-avatar">Me</div>
-    <div class="msg-body">
-      <div class="msg-label">You</div>
-      <div class="msg-bubble">${escHtml(text)}</div>
-    </div>`;
+        <div class="msg-avatar">Me</div>
+        <div class="msg-body">
+          <div class="msg-label">You</div>
+          <div class="msg-bubble">${escHtml(text)}</div>
+        </div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
         }
@@ -1876,11 +2056,11 @@
             const el = document.createElement('div');
             el.className = 'msg agent';
             el.innerHTML = `
-    <div class="msg-avatar">AI</div>
-    <div class="msg-body">
-      <div class="msg-label">ISDP Agent</div>
-      <div class="msg-bubble">${escHtml(text)}</div>
-    </div>`;
+        <div class="msg-avatar">AI</div>
+        <div class="msg-body">
+          <div class="msg-label">ISDP Agent</div>
+          <div class="msg-bubble">${renderMarkdown(text)}</div>
+        </div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
         }
@@ -1900,14 +2080,14 @@
             el.className = 'msg agent';
             el.id = 'typing-msg';
             el.innerHTML = `
-    <div class="msg-avatar">AI</div>
-    <div class="msg-body">
-      <div class="typing-bubble">
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-      </div>
-    </div>`;
+        <div class="msg-avatar">AI</div>
+        <div class="msg-body">
+          <div class="typing-bubble">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
         }
@@ -1920,11 +2100,134 @@
             return String(str)
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/\n/g, '<br>');
+                .replace(/>/g, '&gt;');
         }
 
-        // ── SIDEBAR ───────────────────────────────────
+        // ── MARKDOWN RENDERER ─────────────────────────────────────────────────────
+        function renderInline(text) {
+            let s = escHtml(text);
+            s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            s = s.replace(/_(.+?)_/g, '<em>$1</em>');
+            s = s.replace(/`(.+?)`/g, '<code>$1</code>');
+            return s;
+        }
+
+        function renderTable(tableLines) {
+            const dataLines = tableLines.filter(l => !/^[\|\s\-:]+$/.test(l.trim()));
+            if (!dataLines.length) return '';
+            let html = '<table class="md-table">';
+            dataLines.forEach((line, idx) => {
+                const cells = line.split('|').slice(1, -1);
+                const tag = idx === 0 ? 'th' : 'td';
+                html += '<tr>' + cells.map(c => `<${tag}>${renderInline(c.trim())}</${tag}>`).join('') + '</tr>';
+            });
+            return html + '</table>';
+        }
+
+        function renderMarkdown(text) {
+            const lines = String(text).split('\n');
+            let html = '';
+            let i = 0;
+            while (i < lines.length) {
+                const line = lines[i];
+                // Table
+                if (line.trim().startsWith('|') && line.includes('|')) {
+                    const tableLines = [];
+                    while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].includes('|')) {
+                        tableLines.push(lines[i]);
+                        i++;
+                    }
+                    html += renderTable(tableLines);
+                    continue;
+                }
+                // Headers
+                const h3m = line.match(/^### (.+)/);
+                const h2m = line.match(/^## (.+)/);
+                const h1m = line.match(/^# (.+)/);
+                if (h3m) { html += `<h5>${renderInline(h3m[1])}</h5>`; i++; continue; }
+                if (h2m) { html += `<h4>${renderInline(h2m[1])}</h4>`; i++; continue; }
+                if (h1m) { html += `<h3>${renderInline(h1m[1])}</h3>`; i++; continue; }
+                // Bullet list
+                if (/^[-*] /.test(line)) {
+                    html += '<ul>';
+                    while (i < lines.length && /^[-*] /.test(lines[i])) {
+                        html += `<li>${renderInline(lines[i].replace(/^[-*] /, ''))}</li>`;
+                        i++;
+                    }
+                    html += '</ul>';
+                    continue;
+                }
+                // Numbered list
+                if (/^\d+\. /.test(line)) {
+                    html += '<ol>';
+                    while (i < lines.length && /^\d+\. /.test(lines[i])) {
+                        html += `<li>${renderInline(lines[i].replace(/^\d+\. /, ''))}</li>`;
+                        i++;
+                    }
+                    html += '</ol>';
+                    continue;
+                }
+                // Empty line
+                if (line.trim() === '') { html += '<br>'; i++; continue; }
+                // Normal paragraph
+                html += `<p>${renderInline(line)}</p>`;
+                i++;
+            }
+            return html;
+        }
+
+        // ── NEXT STEP SUGGESTION ──────────────────────────────────────────────────
+        function addNextStepSuggestion() {
+            const nextIdx = currentAgentIndex + 1;
+            if (nextIdx >= AGENT_SEQUENCE.length) return;
+            const next = AGENT_SEQUENCE[nextIdx];
+            const msgs = document.getElementById('chat-messages');
+            const el = document.createElement('div');
+            el.className = 'next-step-card';
+            el.id = 'next-step-card';
+            el.innerHTML = `
+        <div class="next-step-inner">
+          <div class="next-step-meta">
+            <div class="next-step-eyebrow">Nächster Schritt</div>
+            <div class="next-step-name">${escHtml(next.name)}</div>
+            <div class="next-step-block">Block ${next.block} · ${escHtml(next.blockName)}</div>
+          </div>
+          <div class="next-step-actions">
+            <span class="next-step-dismiss" onclick="document.getElementById('next-step-card')?.remove()">Weiter chatten</span>
+            <button class="btn-primary" onclick="advanceToAgent(${nextIdx})">
+              Weiter → ${escHtml(next.name)}
+            </button>
+          </div>
+        </div>`;
+            msgs.appendChild(el);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function advanceToAgent(idx) {
+            document.getElementById('next-step-card')?.remove();
+            currentAgentIndex = idx;
+            currentThreadId = null;
+            const agent = AGENT_SEQUENCE[idx];
+            currentAgentId = AGENT_IDS[agent.name];
+
+            // Update topbar badge
+            document.getElementById('chat-block').textContent = `Block ${agent.block} · ${agent.name}`;
+
+            // Update sidebar
+            const agentNum = idx + 1;
+            updateSidebar(agent.block, agentNum);
+            for (let b = 1; b <= 5; b++) {
+                document.getElementById('sb' + b).style.display = (b === agent.block) ? 'block' : 'none';
+            }
+
+            // Greeting message to new agent
+            const intro = `Wir kommen vom vorherigen ISDP-Schritt. Projekt: "${currentProject}". Bitte erkläre kurz, was du in diesem Schritt (${agent.name}) analysieren oder tun wirst, und was du von mir benötigst.`;
+            addUserMessage(`→ Weiter zu: ${agent.name}`);
+            callAgent(intro);
+        }
+
+        // ── SIDEBAR ───────────────────────────────────────────────────────────────
         function updateSidebar(activeBlock, activeAgent) {
             for (let b = 1; b <= 5; b++) {
                 const el = document.getElementById('wn' + b);
