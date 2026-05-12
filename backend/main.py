@@ -140,3 +140,19 @@ async def health():
 
 
 app.mount("/", StaticFiles(directory="public", html=True), name="static")
+
+@app.get("/api/debug/agents")
+async def debug_agents():
+    """List all agents available in the WatsonX Orchestrate instance."""
+    token = await get_token()
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    results = {}
+    async with httpx.AsyncClient(timeout=30) as client:
+        for path in [
+            "/v1/agents",
+            "/v1/agents?environment_id=draft",
+            "/v1/orchestrate/agents",
+        ]:
+            r = await client.get(f"{WXO_URL}{path}", headers=headers)
+            results[path] = {"status": r.status_code, "body": r.text[:1000]}
+    return results
