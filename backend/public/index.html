@@ -1712,13 +1712,35 @@
         function closeModal() { document.getElementById('modal').classList.remove('open'); }
         function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
 
-        function handleFiles(files) {
-            document.getElementById('file-list').innerHTML = Array.from(files).map(f =>
-                `<div style="padding:4px 0;display:flex;align-items:center;gap:6px;font-size:12px;color:#2d2d2d">
-      <span>📄</span><span>${f.name}</span>
-      <span style="color:#9a9a9a">(${(f.size / 1024).toFixed(0)} KB)</span>
-    </div>`
-            ).join('');
+        async function handleFiles(files) {
+            uploadedFiles = [];
+            const listEl = document.getElementById('file-list');
+            listEl.innerHTML = '';
+
+            for (const file of Array.from(files)) {
+                const row = document.createElement('div');
+                row.style.cssText = 'padding:4px 0;display:flex;align-items:center;gap:6px;font-size:12px;color:#2d2d2d';
+                row.innerHTML = `<span>📄</span><span>${file.name}</span><span id="fst-${file.name}" style="color:#9a9a9a">Wird hochgeladen…</span>`;
+                listEl.appendChild(row);
+
+                try {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    const res = await fetch(`${BACKEND}/api/upload`, { method: 'POST', body: fd });
+                    const data = await res.json();
+                    if (res.ok) {
+                        uploadedFiles.push({ filename: data.filename, text: data.text });
+                        document.getElementById(`fst-${file.name}`).textContent = `✓ ${data.chars} Zeichen extrahiert`;
+                        document.getElementById(`fst-${file.name}`).style.color = '#166534';
+                    } else {
+                        document.getElementById(`fst-${file.name}`).textContent = '⚠ Upload fehlgeschlagen';
+                        document.getElementById(`fst-${file.name}`).style.color = '#991b1b';
+                    }
+                } catch (e) {
+                    document.getElementById(`fst-${file.name}`).textContent = '⚠ ' + e.message;
+                    document.getElementById(`fst-${file.name}`).style.color = '#991b1b';
+                }
+            }
         }
 
         // ── START WORKFLOW ────────────────────────────
