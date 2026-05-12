@@ -1746,16 +1746,24 @@
         // ── START WORKFLOW ────────────────────────────
         async function startWorkflow() {
             const name = document.getElementById('new-project-name').value.trim();
-            if (!name) { alert('Please enter a project name.'); return; }
+            if (!name) { alert('Bitte Projektname eingeben.'); return; }
             closeModal();
             currentProject = name;
             currentThreadId = null;
             currentAgentId = AGENT_IDS['Document Classifier'];
             openChatPage(name, 'Block 1 · Document Classifier', 1, 1);
-            // Send opening message automatically
-            await callAgent(
-                `New ISDP project: "${name}". Please introduce yourself and ask me to upload or describe the system I need to create an ISDP for.`
-            );
+
+            let msg = `Neues ISDP-Projekt: "${name}".`;
+            if (uploadedFiles.length > 0) {
+                msg += `\n\nDer Nutzer hat folgende Dokumente hochgeladen:\n`;
+                for (const f of uploadedFiles) {
+                    msg += `\n--- ${f.filename} ---\n${f.text}\n`;
+                }
+                msg += `\nBitte analysiere diese Dokumente und führe mich durch den ISDP-Prozess.`;
+            } else {
+                msg += ` Bitte stelle dich vor und frage nach dem System, für das ein ISDP erstellt werden soll.`;
+            }
+            await callAgent(msg);
         }
 
         // ── OPEN / CLOSE CHAT ─────────────────────────
