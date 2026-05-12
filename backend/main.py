@@ -134,16 +134,15 @@ async def chat(req: ChatRequest):
     return {"response": response_text, "thread_id": thread_id, "agent_id": req.agent_id}
 
 
+# ... (alles bleibt gleich bis hier)
+
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "wxo_url": WXO_URL, "environment_id": ENVIRONMENT_ID, "api_key_set": bool(IBM_API_KEY)}
 
 
-app.mount("/", StaticFiles(directory="public", html=True), name="static")
-
 @app.get("/api/debug/agents")
 async def debug_agents():
-    """List all agents available in the WatsonX Orchestrate instance."""
     token = await get_token()
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     results = {}
@@ -156,3 +155,7 @@ async def debug_agents():
             r = await client.get(f"{WXO_URL}{path}", headers=headers)
             results[path] = {"status": r.status_code, "body": r.text[:1000]}
     return results
+
+
+# ← app.mount MUSS die allerletzte Zeile sein
+app.mount("/", StaticFiles(directory="public", html=True), name="static")
