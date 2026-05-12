@@ -20,9 +20,12 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="ISDP Platform")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-IBM_API_KEY    = os.getenv("IBM_API_KEY")
-WXO_URL        = os.getenv("WXO_URL", "https://api.eu-de.watson-orchestrate.cloud.ibm.com")
-ENVIRONMENT_ID = os.getenv("ENVIRONMENT_ID", "draft")
+IBM_API_KEY     = os.getenv("IBM_API_KEY")
+WXO_URL         = os.getenv("WXO_URL", "https://api.eu-de.watson-orchestrate.cloud.ibm.com")
+ENVIRONMENT_ID  = os.getenv("ENVIRONMENT_ID", "ed6bfb6e-6a06-4fe6-bca5-6786215806f3")
+WXO_ACCOUNT_ID  = os.getenv("WXO_ACCOUNT_ID", "09a277c275f04bd280405e976aa33811")
+WXO_INSTANCE_ID = os.getenv("WXO_INSTANCE_ID", "22fe63ec-73f6-4202-91cc-cfbe9f4de972")
+TENANT_ID       = f"{WXO_ACCOUNT_ID}_{WXO_INSTANCE_ID}"
 
 _token_cache: dict = {"token": None, "expires_at": 0.0}
 
@@ -47,6 +50,14 @@ async def get_token() -> str:
         return _token_cache["token"]
 
 
+def wxo_headers(token: str) -> dict:
+    return {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+        "x-ibm-wo-tenant-id": TENANT_ID,
+    }
+
+
 class ChatRequest(BaseModel):
     message: str
     agent_id: str
@@ -62,9 +73,7 @@ async def upload_file(file: UploadFile = File(...)):
         if filename.lower().endswith(".pdf"):
             import pypdf
             reader = pypdf.PdfReader(io.BytesIO(content))
-            text = "\n\n".join(
-                page.extract_text() for page in reader.pages if page.extract_text()
-            )
+            text = "\n\n".join(p.extract_text() for p in reader.pages if p.extract_text())
         elif filename.lower().endswith((".docx", ".doc")):
             from docx import Document
             doc = Document(io.BytesIO(content))
@@ -79,7 +88,8 @@ async def upload_file(file: UploadFile = File(...)):
     return {"filename": filename, "text": text, "chars": len(text)}
 
 
-async def run_wxo(client, headers, agent_id, message, thread_id):
+async def run_wxo(client, token, agent_id, message, thread_id):
+    headers = wxo_headers(token)
     body = {
         "agent_id": agent_id,
         "environment_id": ENVIRONMENT_ID,
@@ -88,7 +98,7 @@ async def run_wxo(client, headers, agent_id, message, thread_id):
     if thread_id:
         body["thread_id"] = thread_id
 
-    logger.info("POST runs  agent=%s  env=%s", agent_id, ENVIRONMENT_ID)
+    logger.info("POST runs  agent=%s  env=%s  tenant=%s", agent_id, ENVIRONMENT_ID, TENANT_ID)
     r = await client.post(f"{WXO_URL}/v1/orchestrate/runs", headers=headers, json=body)
     if not r.is_success:
         logger.error("Run failed %s: %s", r.status_code, r.text[:800])
@@ -102,7 +112,9 @@ async def run_wxo(client, headers, agent_id, message, thread_id):
 
     for i in range(120):
         await asyncio.sleep(1)
-        poll = await client.get(f"{WXO_URL}/v1/orchestrate/runs/{current_run_id}", headers=headers)
+        poll = await client.get(
+            f"{WXO_URL}/v1/orchestrate/runs/{current_run_id}", headers=headers
+        )
         if not poll.is_success:
             raise HTTPException(poll.status_code, f"Poll failed: {poll.text[:200]}")
         result = poll.json()
@@ -126,36 +138,34 @@ async def run_wxo(client, headers, agent_id, message, thread_id):
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
     token = await get_token()
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=10.0)) as client:
         thread_id, response_text = await run_wxo(
-            client, headers, req.agent_id, req.message, req.thread_id
+            client, token, req.agent_id, req.message, req.thread_id
         )
     return {"response": response_text, "thread_id": thread_id, "agent_id": req.agent_id}
 
 
-# ... (alles bleibt gleich bis hier)
-
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "wxo_url": WXO_URL, "environment_id": ENVIRONMENT_ID, "api_key_set": bool(IBM_API_KEY)}
+    return {
+        "status": "ok",
+        "wxo_url": WXO_URL,
+        "environment_id": ENVIRONMENT_ID,
+        "tenant_id": TENANT_ID,
+        "api_key_set": bool(IBM_API_KEY),
+    }
 
 
 @app.get("/api/debug/agents")
 async def debug_agents():
     token = await get_token()
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    headers = wxo_headers(token)
     results = {}
     async with httpx.AsyncClient(timeout=30) as client:
-        for path in [
-            "/v1/agents",
-            "/v1/agents?environment_id=draft",
-            "/v1/orchestrate/agents",
-        ]:
+        for path in ["/v1/agents", "/v1/agents?environment_id=draft", "/v1/orchestrate/agents"]:
             r = await client.get(f"{WXO_URL}{path}", headers=headers)
             results[path] = {"status": r.status_code, "body": r.text[:1000]}
     return results
 
 
-# ← app.mount MUSS die allerletzte Zeile sein
 app.mount("/", StaticFiles(directory="public", html=True), name="static")
