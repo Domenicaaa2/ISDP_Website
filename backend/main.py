@@ -160,12 +160,10 @@ async def health():
 async def debug_agents():
     token = await get_token()
     headers = wxo_headers(token)
-    results = {}
     async with httpx.AsyncClient(timeout=30) as client:
-        for path in ["/v1/agents", "/v1/agents?environment_id=draft", "/v1/orchestrate/agents"]:
-            r = await client.get(f"{WXO_URL}{path}", headers=headers)
-            results[path] = {"status": r.status_code, "body": r.text[:1000]}
-    return results
+        r = await client.get(f"{WXO_URL}/v1/orchestrate/agents", headers=headers)
+        agents = r.json()
+        return [{"id": a["id"], "name": a["name"]} for a in agents]
 
 
 app.mount("/", StaticFiles(directory="public", html=True), name="static")
