@@ -1351,6 +1351,38 @@
             color: var(--grey-600);
         }
 
+        /* CHAT UPLOAD BUTTON */
+        .upload-chat-btn {
+            width: 42px;
+            height: 42px;
+            background: var(--white);
+            border: 1px solid var(--grey-200);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: border-color 0.15s, background 0.15s, color 0.15s;
+            color: var(--grey-600);
+        }
+
+        .upload-chat-btn:hover {
+            border-color: var(--red-mid);
+            background: var(--red-light);
+            color: var(--red);
+        }
+
+        .upload-chat-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .upload-chat-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
         /* ANIMATIONS */
         @keyframes fadeUp {
             from {
@@ -1761,6 +1793,16 @@
                 </div>
                 <div class="chat-messages" id="chat-messages"></div>
                 <div class="chat-input-bar">
+                    <button class="upload-chat-btn" id="upload-chat-btn"
+                        onclick="document.getElementById('chat-file-input').click()" title="Dokument hochladen">
+                        <svg viewBox="0 0 16 16" fill="none">
+                            <path d="M3 11v1.5A1.5 1.5 0 004.5 14h7A1.5 1.5 0 0013 12.5V11M8 2v8M5.5 4.5L8 2l2.5 2.5"
+                                stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                    <input type="file" id="chat-file-input" multiple accept=".pdf,.docx,.doc,.txt,.md"
+                        style="display:none" onchange="handleChatFiles(this.files)">
                     <textarea class="chat-input" id="chat-input" placeholder="Type your message…" rows="1"
                         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
                         oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
@@ -1856,7 +1898,7 @@
             // 13: German Draft Generation
             (p) => `Projekt: "${p}". Validation abgeschlossen. Erstelle strukturierte deutsche ISDP-Kapitelentwürfe auf Basis der validierten Findings. Formell, governance-orientiert, fact-basiert — kein Chatbot-Stil. Pro Kapitel: Kapitelname | Entwurfstext (Deutsch) | verwendete Finding-IDs | offene Punkte (falls vorhanden). Dann: gut befüllte Kapitel, Kapitel mit offenen Punkten, wo Human Review besonders wichtig ist.`,
             // 14: Quality Assurance
-            (p) => `Projekt: "${p}". Deutsche Entwürfe generiert. Prüfe die Qualität: Sind Kapitel zu generisch (\"Sicherheit ist gewährleistet\"), zu vage, redundant oder oberflächlich? Pro QA-Issue: QA-ID | Betroffenes Kapitel | Problemtyp (vage/generisch/Wiederholung/oberflächlich/inkonsistent) | Problematische Stelle | Warum schwach | Empfohlene Aktion | Priorität. Dann: grösste Qualitätsschwächen, riskante Kapitel, bereits starke Kapitel.`,
+            (p) => `Projekt: "${p}". Deutsche Entwürfe generiert. Prüfe die Qualität: Sind Kapitel zu generisch ("Sicherheit ist gewährleistet"), zu vage, redundant oder oberflächlich? Pro QA-Issue: QA-ID | Betroffenes Kapitel | Problemtyp (vage/generisch/Wiederholung/oberflächlich/inkonsistent) | Problematische Stelle | Warum schwach | Empfohlene Aktion | Priorität. Dann: grösste Qualitätsschwächen, riskante Kapitel, bereits starke Kapitel.`,
             // 15: Feedback Integration
             (p) => `Projekt: "${p}". QA-Review abgeschlossen. Verarbeite das Expertenfeedback und integriere Korrekturen, Klärungsantworten und fehlende Informationen. Pro Feedback-Item: Feedback-ID | Betroffenes Kapitel/Thema | Feedbacktyp (redaktionell/faktisch/neue Info/Scope-Änderung/Bestätigung) | Zusammenfassung | Empfohlene Aktion | Braucht Re-Run? | Zielagent falls Re-Run | Status.`,
             // 16: Quality Scoring
@@ -1917,8 +1959,6 @@
         let isSending = false;
 
         // ── MODAL ─────────────────────────────────────────────────────────────────
-
-        // ── MODAL ─────────────────────────────────────────────────────────────────
         function openModal() {
             document.getElementById('new-project-name').value = '';
             document.getElementById('file-list').innerHTML = '';
@@ -1976,7 +2016,7 @@
                 for (const f of uploadedFiles) {
                     msg += `\n--- ${f.filename} ---\n${f.text}\n`;
                 }
-                msg += `\nBitte analysiere diese Dokumente und führe mich durch den ISDP-Prozess.`;
+                msg += `\n\nBitte klassifiziere jede Datei. Ausgabe: eine kompakte Tabelle mit Spalten Nr. | Dateiname | Kategorie | ISDP-Relevanz (Hoch / Mittel / Niedrig) | Begründung (max. 1 Satz). Danach eine kurze Liste der fehlenden Dokumentkategorien (z.B. Backup, Supplier, Governance — falls nicht vorhanden). Keine weiteren Analysen, keine langen Erklärungen.`;
             } else {
                 msg += ` Bitte stelle dich vor und frage nach dem System, für das ein ISDP erstellt werden soll.`;
             }
@@ -2065,10 +2105,40 @@
             setSendDisabled(false);
         }
 
+        // ── CHAT FILE UPLOAD ──────────────────────────────────────────────────────
+        async function handleChatFiles(files) {
+            if (!files.length) return;
+            document.getElementById('chat-file-input').value = '';
+            const uploads = [];
+            for (const file of Array.from(files)) {
+                try {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    const res = await fetch(`${BACKEND}/api/upload`, { method: 'POST', body: fd });
+                    const data = await res.json();
+                    if (res.ok) uploads.push({ filename: data.filename, text: data.text, chars: data.chars });
+                    else addErrorMessage(`Upload fehlgeschlagen: ${file.name}`);
+                } catch (e) {
+                    addErrorMessage(`Upload fehlgeschlagen: ${e.message}`);
+                }
+            }
+            if (!uploads.length) return;
+            let msg = uploads.length === 1
+                ? `Ich lade ein weiteres Dokument hoch:\n`
+                : `Ich lade ${uploads.length} weitere Dokumente hoch:\n`;
+            for (const f of uploads) {
+                msg += `\n--- ${f.filename} (${f.chars} Zeichen) ---\n${f.text}\n`;
+            }
+            msg += `\nBitte berücksichtige diese Dokumente in deiner Analyse.`;
+            addUserMessage(`📎 ${uploads.map(f => f.filename).join(', ')}`);
+            await callAgent(msg);
+        }
+
         // ── UI HELPERS ────────────────────────────────────────────────────────────
         function setSendDisabled(v) {
             document.getElementById('send-btn').disabled = v;
             document.getElementById('chat-input').disabled = v;
+            document.getElementById('upload-chat-btn').disabled = v;
         }
 
         function showConnecting(text) {
@@ -2191,22 +2261,34 @@
                 if (h3m) { html += `<h5>${renderInline(h3m[1])}</h5>`; i++; continue; }
                 if (h2m) { html += `<h4>${renderInline(h2m[1])}</h4>`; i++; continue; }
                 if (h1m) { html += `<h3>${renderInline(h1m[1])}</h3>`; i++; continue; }
-                // Bullet list
-                if (/^[-*] /.test(line)) {
+                // Bullet list (tolerates leading spaces and blank lines between items)
+                if (/^\s*[-*] /.test(line)) {
                     html += '<ul>';
-                    while (i < lines.length && /^[-*] /.test(lines[i])) {
-                        html += `<li>${renderInline(lines[i].replace(/^[-*] /, ''))}</li>`;
-                        i++;
+                    while (i < lines.length) {
+                        if (/^\s*[-*] /.test(lines[i])) {
+                            html += `<li>${renderInline(lines[i].replace(/^\s*[-*] /, ''))}</li>`;
+                            i++;
+                        } else if (lines[i].trim() === '' && i + 1 < lines.length && /^\s*[-*] /.test(lines[i + 1])) {
+                            i++; // skip single blank line between items
+                        } else {
+                            break;
+                        }
                     }
                     html += '</ul>';
                     continue;
                 }
-                // Numbered list
-                if (/^\d+\. /.test(line)) {
+                // Numbered list (tolerates leading spaces and blank lines between items)
+                if (/^\s*\d+\. /.test(line)) {
                     html += '<ol>';
-                    while (i < lines.length && /^\d+\. /.test(lines[i])) {
-                        html += `<li>${renderInline(lines[i].replace(/^\d+\. /, ''))}</li>`;
-                        i++;
+                    while (i < lines.length) {
+                        if (/^\s*\d+\. /.test(lines[i])) {
+                            html += `<li>${renderInline(lines[i].replace(/^\s*\d+\. /, ''))}</li>`;
+                            i++;
+                        } else if (lines[i].trim() === '' && i + 1 < lines.length && /^\s*\d+\. /.test(lines[i + 1])) {
+                            i++;
+                        } else {
+                            break;
+                        }
                     }
                     html += '</ol>';
                     continue;
@@ -2264,8 +2346,11 @@
                 document.getElementById('sb' + b).style.display = (b === agent.block) ? 'block' : 'none';
             }
 
-            // Greeting message to new agent
-            const intro = `Wir kommen vom vorherigen ISDP-Schritt. Projekt: "${currentProject}". Bitte erkläre kurz, was du in diesem Schritt (${agent.name}) analysieren oder tun wirst, und was du von mir benötigst.`;
+            // Greeting message to new agent — use agent-specific intro if available
+            const introFn = AGENT_INTROS[idx];
+            const intro = introFn
+                ? introFn(currentProject)
+                : `Wir kommen vom vorherigen ISDP-Schritt. Projekt: "${currentProject}". Bitte erkläre kurz, was du in diesem Schritt (${agent.name}) tun wirst.`;
             addUserMessage(`→ Weiter zu: ${agent.name}`);
             callAgent(intro);
         }
