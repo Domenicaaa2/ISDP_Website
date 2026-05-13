@@ -45,6 +45,7 @@
             min-height: 100vh;
         }
 
+        /* NAV */
         nav {
             background: var(--white);
             border-bottom: 1px solid var(--grey-200);
@@ -122,12 +123,14 @@
             cursor: pointer;
         }
 
+        /* MAIN */
         main {
             max-width: 1100px;
             margin: 0 auto;
             padding: 40px 32px 80px;
         }
 
+        /* HERO */
         .hero {
             display: flex;
             align-items: flex-start;
@@ -182,6 +185,7 @@
             flex-shrink: 0;
         }
 
+        /* BUTTONS */
         .btn-primary {
             background: var(--red);
             color: var(--white);
@@ -221,6 +225,7 @@
             border-color: var(--grey-400);
         }
 
+        /* STATS */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -262,6 +267,7 @@
             color: var(--red);
         }
 
+        /* SECTION */
         .section-header {
             display: flex;
             align-items: baseline;
@@ -282,6 +288,7 @@
             font-weight: 500;
         }
 
+        /* CARDS */
         .isdp-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -528,6 +535,7 @@
             color: var(--red);
         }
 
+        /* NEW CARD */
         .new-card {
             background: var(--white);
             border: 1.5px dashed var(--grey-200);
@@ -577,6 +585,7 @@
             line-height: 1.5;
         }
 
+        /* BOTTOM */
         .bottom-grid {
             display: grid;
             grid-template-columns: 1fr 320px;
@@ -1101,10 +1110,8 @@
             background: var(--white);
             border-radius: var(--radius-lg);
             padding: 32px;
-            width: 520px;
+            width: 480px;
             max-width: 90vw;
-            max-height: 90vh;
-            overflow-y: auto;
             box-shadow: var(--shadow-lg);
             animation: modalIn 0.2s ease;
         }
@@ -1381,6 +1388,7 @@
             height: 20px;
         }
 
+        /* ANIMATIONS */
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -1429,6 +1437,7 @@
 
 <body>
 
+    <!-- DASHBOARD -->
     <div id="dashboard-page">
         <nav>
             <div class="nav-logo">
@@ -1457,7 +1466,8 @@
                     <div class="hero-eyebrow"><span class="eyebrow-dot"></span> AI-assisted ISDP preparation</div>
                     <h1 class="hero-title">Your ISDP<br>workspace</h1>
                     <p class="hero-sub">Create, track, and complete Information Security &amp; Data Protection concepts
-                        — guided by AI, validated by experts.</p>
+                        — guided
+                        by AI, validated by experts.</p>
                 </div>
                 <div class="hero-right">
                     <button class="btn-secondary">Import existing</button>
@@ -1525,12 +1535,16 @@
                     </div>
                     <div class="missing-section">
                         <div class="missing-label">Open items</div>
-                        <div class="tag-row"><span class="tag tag-warn">Backup docs missing</span><span
-                                class="tag tag-warn">IAM unclear</span><span class="tag tag-ok">Architecture ✓</span>
+                        <div class="tag-row">
+                            <span class="tag tag-warn">Backup docs missing</span>
+                            <span class="tag tag-warn">IAM unclear</span>
+                            <span class="tag tag-ok">Architecture ✓</span>
                         </div>
                     </div>
-                    <div class="card-footer"><span class="footer-date">Updated 2h ago</span><span
-                            class="footer-action">Continue →</span></div>
+                    <div class="card-footer">
+                        <span class="footer-date">Updated 2h ago</span>
+                        <span class="footer-action">Continue →</span>
+                    </div>
                 </div>
 
                 <div class="isdp-card status-review"
@@ -1559,11 +1573,15 @@
                     </div>
                     <div class="missing-section">
                         <div class="missing-label">Open items</div>
-                        <div class="tag-row"><span class="tag tag-warn">3 unsupported claims</span><span
-                                class="tag tag-ok">Scope confirmed ✓</span></div>
+                        <div class="tag-row">
+                            <span class="tag tag-warn">3 unsupported claims</span>
+                            <span class="tag tag-ok">Scope confirmed ✓</span>
+                        </div>
                     </div>
-                    <div class="card-footer"><span class="footer-date">Updated yesterday</span><span
-                            class="footer-action">Review →</span></div>
+                    <div class="card-footer">
+                        <span class="footer-date">Updated yesterday</span>
+                        <span class="footer-action">Review →</span>
+                    </div>
                 </div>
 
                 <div class="isdp-card status-draft"
@@ -1592,11 +1610,15 @@
                     </div>
                     <div class="missing-section">
                         <div class="missing-label">Open items</div>
-                        <div class="tag-row"><span class="tag tag-warn">Scope not confirmed</span><span
-                                class="tag tag-warn">Supplier docs needed</span></div>
+                        <div class="tag-row">
+                            <span class="tag tag-warn">Scope not confirmed</span>
+                            <span class="tag tag-warn">Supplier docs needed</span>
+                        </div>
                     </div>
-                    <div class="card-footer"><span class="footer-date">Created 3 days ago</span><span
-                            class="footer-action">Continue →</span></div>
+                    <div class="card-footer">
+                        <span class="footer-date">Created 3 days ago</span>
+                        <span class="footer-action">Continue →</span>
+                    </div>
                 </div>
 
                 <div class="new-card" onclick="openModal()">
@@ -1679,8 +1701,10 @@
         </div>
 
         <div class="chat-layout">
+            <!-- SIDEBAR -->
             <div class="ws-sidebar">
                 <span class="ws-sec-lbl">Workflow progress</span>
+
                 <div class="ws-bh" onclick="toggleSb('sb1')">
                     <div class="ws-num" id="wn1">1</div><span>Intake &amp; Scoping</span>
                 </div>
@@ -1695,6 +1719,7 @@
                         <div class="ws-dot d-pend"></div>Scope Clarification
                     </div>
                 </div>
+
                 <div class="ws-bh" onclick="toggleSb('sb2')">
                     <div class="ws-num" id="wn2">2</div><span>Structure &amp; Reuse</span>
                 </div>
@@ -1709,6 +1734,7 @@
                         <div class="ws-dot d-pend"></div>Standards Relevance
                     </div>
                 </div>
+
                 <div class="ws-bh" onclick="toggleSb('sb3')">
                     <div class="ws-num" id="wn3">3</div><span>Analysis &amp; Mapping</span>
                 </div>
@@ -1729,6 +1755,7 @@
                         <div class="ws-dot d-pend"></div>Clarification Questions
                     </div>
                 </div>
+
                 <div class="ws-bh" onclick="toggleSb('sb4')">
                     <div class="ws-num" id="wn4">4</div><span>Control &amp; Draft</span>
                 </div>
@@ -1746,6 +1773,7 @@
                         <div class="ws-dot d-pend"></div>Quality Assurance
                     </div>
                 </div>
+
                 <div class="ws-bh" onclick="toggleSb('sb5')">
                     <div class="ws-num" id="wn5">5</div><span>Closing</span>
                 </div>
@@ -1762,6 +1790,7 @@
                 </div>
             </div>
 
+            <!-- CHAT MAIN -->
             <div class="chat-main">
                 <div id="connecting-bar" class="connecting-bar" style="display:none">
                     <span class="conn-dot"></span>
@@ -1782,7 +1811,7 @@
                         style="display:none" onchange="handleChatFiles(this.files)">
                     <textarea class="chat-input" id="chat-input" placeholder="Type your message…" rows="1"
                         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
-                        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,200)+'px'"></textarea>
+                        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
                     <button class="send-btn" id="send-btn" onclick="sendMessage()">
                         <svg viewBox="0 0 16 16" fill="none">
                             <path d="M14 2L2 7l5 1.5L14 2zM7 8.5L9 14l5-12" stroke="white" stroke-width="1.4"
@@ -1836,30 +1865,53 @@
     </div>
 
     <script>
+        // ── CONFIG ────────────────────────────────────────────────────────────────
         const BACKEND = '';
-        let uploadedFiles = [];
 
+        // ── UPLOADED FILE STATE ───────────────────────────────────────────────────
+        let uploadedFiles = [];   // [{filename, text}]
+
+        // ── AGENT-SPECIFIC INTRO MESSAGES ────────────────────────────────────────
         const AGENT_INTROS = [
-            (p) => `Projekt: "${p}". Klassifiziere die hochgeladenen Dokumente.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit GENAU 5 Spalten: Nr. | Dateiname | Primärkategorie | ISDP-Relevanz | Begründung\n   - Jedes Dokument = eine Zeile. ISDP-Relevanz: nur "Hoch", "Mittel" oder "Niedrig". Begründung: max. 1 Satz aus dem Dokumentinhalt.\n2. Kurze Aufzählung: Fehlende Dokumentkategorien (Backup/BCM, Supplier/SLA, Privacy/DPIA, Logging/SIEM, Governance/Policy etc.)\n3. Empfehlung: Kann der Nutzer mit diesen Dokumenten weiterfahren? Frage direkt ob er weitere Dokumente hat oder mit dem vorhandenen Material fortfahren möchte.\n\nWICHTIG: Keine langen Einleitungen, keine weiteren Abschnitte ausser den drei oben.`,
+            // 0: Document Classifier
+            (p) => `Projekt: "${p}". Klassifiziere die hochgeladenen Dokumente.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit GENAU 5 Spalten: Nr. | Dateiname | Primärkategorie | ISDP-Relevanz | Begründung\n   - Jedes Dokument = eine Zeile. ISDP-Relevanz: nur "Hoch", "Mittel" oder "Niedrig". Begründung: max. 1 Satz aus dem Dokumentinhalt.\n2. Kurze Aufzählung: Fehlende Dokumentkategorien (Backup/BCM, Supplier/SLA, Privacy/DPIA, Logging/SIEM, Governance/Policy etc.)\n\nWICHTIG: Keine Einleitung, keine Zusammenfassung, keine Next-Steps, keine weiteren Abschnitte. Nur Tabelle + Fehlende Kategorien.`,
+            // 1: Document Readiness
             (p) => `Projekt: "${p}". Die Dokumente wurden klassifiziert. Prüfe das gesamte Dokumentenpaket auf Vollständigkeit und Qualität. Gib zurück: Gesamtstatus (bereit / teilweise bereit / nicht bereit), verfügbare Bereiche, schwache oder fehlende Kategorien, Qualitätsprobleme, Empfehlung für das weitere Vorgehen. Kompakt und strukturiert.`,
+            // 2: Scope Clarification
             (p) => `Projekt: "${p}". Readiness-Check abgeschlossen. Kläre jetzt den Scope: Systemname, Zweck, Deployment-Modell (SaaS/On-Prem/Hybrid), In-Scope-Komponenten, Out-of-Scope, Personendaten ja/nein, Drittparteien. Trenne bestätigte von abgeleiteten und fehlenden Punkten. Liste offene Klärungsfragen auf.`,
+            // 3: Reference & Reuse Guidance
             (p) => `Projekt: "${p}". Scope ist geklärt. Identifiziere pro Thema (IAM, Backup, Logging, Datenschutz, Lieferanten, Remote Access etc.), ob ISDP-Kapitel direkt referenziert, referenziert + ergänzt oder neu geschrieben werden sollen. Gib pro Thema an: Empfohlene Vorgehensweise | Vorgeschlagene Quelldokumente | Projektspezifischer Ergänzungsbedarf.`,
+            // 4: ISDP Template / Structure
             (p) => `Projekt: "${p}". Referenz- und Wiederverwendungsempfehlungen liegen vor. Bestimme die Zielstruktur des ISDP: Kapitelname | Status (Pflicht / Optional / Nicht anwendbar / Referenzbasiert / Projektspezifisch) | Warum dieser Status | Erwarteter Inhaltstyp | Wahrscheinliche Hauptquelle.`,
+            // 5: Standards Relevance
             (p) => `Projekt: "${p}". Kapitelstruktur definiert. Prüfe, welche Standards für diesen Fall relevant sind (ISO 27001/27002, NIST CSF etc.) und welche Kontrollbereiche (IAM, Logging, Backup, Datenschutz, Lieferanten, Incident Handling etc.) berücksichtigt werden sollten. Pro Bereich: Relevanzgrad (hoch/mittel/niedrig) und Begründung.`,
+            // 6: Security Fact Extraction
             (p) => `Projekt: "${p}". Scope und Struktur sind geklärt. Extrahiere alle sicherheits- und datenschutzrelevanten Fakten aus den Dokumenten. Pro Finding: Finding-ID | Thema | Aussage | Quelldokument | Evidenztyp (explizit/abgeleitet) | Konfidenz (hoch/mittel/niedrig). Dann: starke Bereiche, schwache Bereiche, Bereiche ohne Evidenz.`,
+            // 7: Schutzbedarfsanalyse
             (p) => `Projekt: "${p}". Faktenextraktion abgeschlossen. Führe die Schutzbedarfsanalyse durch. Bewerte pro Kriterium: Vertraulichkeit, Verfügbarkeit, Integrität, Nachvollziehbarkeit, Datenschutz, Datenverlust, Aufbewahrung/Archivierung. Pro Kriterium: Stufe (hoch/mittel/niedrig/unklar) | Begründung | Evidenzbasis | Konfidenz. Dann Gesamtprofil und wichtigste Klärungsbedarfe.`,
+            // 8: ISDP Section Mapping
             (p) => `Projekt: "${p}". Faktenextraktion und Schutzbedarfsanalyse abgeschlossen. Mappe die extrahierten Findings in die richtigen ISDP-Kapitel. Pro Kapitel: gemappte Finding-IDs | Kernaussagen | Quellenangabe | Mapping-Konfidenz | offene Inhaltslücken. Dann: gut abgedeckte Kapitel, schwach abgedeckte Kapitel, nicht zuordbare Findings.`,
+            // 9: Gap & Conflict Detection
             (p) => `Projekt: "${p}". Section-Mapping abgeschlossen. Prüfe das gemappte Material auf Lücken, Widersprüche und schwach belegte Stellen. Pro Issue: Issue-ID | Typ (fehlende Info/Widerspruch/Ambiguität/schwache Evidenz/Referenz fehlt/Human-Bestätigung nötig) | Betroffenes Kapitel | Beschreibung | Warum relevant | Empfohlene Lösung | Priorität (hoch/mittel/niedrig).`,
+            // 10: Clarification Questions
             (p) => `Projekt: "${p}". Gap- und Konfliktanalyse abgeschlossen. Formuliere die wichtigsten Klärungsfragen für den Projektverantwortlichen. Nur Fragen, die den nächsten Schritt wirklich entsperren. Pro Frage: Frage-ID | Betroffenes Kapitel | Frage | Warum nötig | Erwartete Antwortform | Zielrolle | Priorität. Dann: kritische Blocker, optionale Folgefragen, minimales Fragepaket.`,
+            // 11: Standards Coverage Check
             (p) => `Projekt: "${p}". Mapping und Gap-Analyse abgeschlossen. Prüfe ob das gemappte ISDP-Material die relevanten Kontrollbereiche ausreichend abdeckt. Pro Domäne: Kontrollbereich | Relevanzgrad | Coverage-Status (ausreichend/teilweise/schwach/keine Evidenz/nicht anwendbar) | Betroffene Kapitel | Empfohlener nächster Schritt.`,
+            // 12: Evidence Validation
             (p) => `Projekt: "${p}". Standards-Coverage-Check abgeschlossen. Validiere, ob die extrahierten und gemappten Aussagen durch die Quelldokumente belegt sind. Pro Statement: Validierungs-ID | Aussage | Status (belegt/teilweise/schwach/unbelegt/widersprüchlich) | Quellenangabe | Begründung | Empfohlene Aktion. Dann: belegte Bereiche, problematische Aussagen, was vor dem Entwurf bereinigt werden sollte.`,
+            // 13: German Draft Generation
             (p) => `Projekt: "${p}". Validation abgeschlossen. Erstelle strukturierte deutsche ISDP-Kapitelentwürfe auf Basis der validierten Findings. Formell, governance-orientiert, fact-basiert — kein Chatbot-Stil. Pro Kapitel: Kapitelname | Entwurfstext (Deutsch) | verwendete Finding-IDs | offene Punkte (falls vorhanden). Dann: gut befüllte Kapitel, Kapitel mit offenen Punkten, wo Human Review besonders wichtig ist.`,
+            // 14: Quality Assurance
             (p) => `Projekt: "${p}". Deutsche Entwürfe generiert. Prüfe die Qualität: Sind Kapitel zu generisch ("Sicherheit ist gewährleistet"), zu vage, redundant oder oberflächlich? Pro QA-Issue: QA-ID | Betroffenes Kapitel | Problemtyp (vage/generisch/Wiederholung/oberflächlich/inkonsistent) | Problematische Stelle | Warum schwach | Empfohlene Aktion | Priorität. Dann: grösste Qualitätsschwächen, riskante Kapitel, bereits starke Kapitel.`,
+            // 15: Feedback Integration
             (p) => `Projekt: "${p}". QA-Review abgeschlossen. Verarbeite das Expertenfeedback und integriere Korrekturen, Klärungsantworten und fehlende Informationen. Pro Feedback-Item: Feedback-ID | Betroffenes Kapitel/Thema | Feedbacktyp (redaktionell/faktisch/neue Info/Scope-Änderung/Bestätigung) | Zusammenfassung | Empfohlene Aktion | Braucht Re-Run? | Zielagent falls Re-Run | Status.`,
+            // 16: Quality Scoring
             (p) => `Projekt: "${p}". Feedback integriert. Erstelle ein strukturiertes Quality-Scoring für das ISDP-Paket mit folgenden Dimensionen (je 0–100): Vollständigkeit | Evidenzstärke | Klarheit | Spezifität | Konsistenz | Standards-Coverage. Dazu: Open-Issues-Last (niedrig/mittel/hoch) und Gesamt-Score (0–100) mit Bandbreite (schwach / akzeptabel / stark). Dann: Haupttreiber, Top-Schwächen, Empfehlung (weiter / mit Vorsicht / überarbeiten).`,
+            // 17: Final Review
             (p) => `Projekt: "${p}". Quality-Scoring abgeschlossen. Führe das finale Review-Gate durch: Sind alle Kapitel vorhanden und inhaltlich ausreichend? Sind offene Issues sichtbar? Ist die Evidenz/Traceability vorhanden? Ist Human-Feedback integriert? Gate-Entscheid: bereit für Handoff / bereit mit offenen Punkten / noch nicht bereit. Dann: was gut ist, was riskant bleibt, ob das Paket an den Experten übergeben werden kann.`,
         ];
 
+        // ── AGENT SEQUENCE (ordered workflow) ────────────────────────────────────
         const AGENT_SEQUENCE = [
             { name: 'Document Classifier', block: 1, blockName: 'Intake & Scoping' },
             { name: 'Document Readiness', block: 1, blockName: 'Intake & Scoping' },
@@ -1903,12 +1955,16 @@
         };
         const AGENT_NAMES = Object.keys(AGENT_IDS);
 
+        // ── STATE ─────────────────────────────────────────────────────────────────
         let currentThreadId = null;
         let currentAgentId = AGENT_IDS['Document Classifier'];
         let currentAgentIndex = 0;
         let currentProject = null;
+        let projectDesc = '';
+        let agentOutputHistory = [];
         let isSending = false;
 
+        // ── MODAL ─────────────────────────────────────────────────────────────────
         function openModal() {
             document.getElementById('new-project-name').value = '';
             document.getElementById('new-project-desc').value = '';
@@ -1922,20 +1978,25 @@
         const SUPPORTED_EXTS = ['.pdf', '.docx', '.doc', '.txt', '.md'];
 
         async function handleFiles(files) {
-            uploadedFiles = [];
             const listEl = document.getElementById('file-list');
-            listEl.innerHTML = '';
+
             for (const file of Array.from(files)) {
+                if (uploadedFiles.some(f => f.filename === file.name)) continue;
+
                 const ext = '.' + file.name.split('.').pop().toLowerCase();
+                const safeId = 'status-' + file.name.replace(/[^a-z0-9]/gi, '_');
                 const row = document.createElement('div');
                 row.style.cssText = 'padding:4px 0;display:flex;align-items:center;gap:6px;font-size:12px;color:#2d2d2d';
+
                 if (!SUPPORTED_EXTS.includes(ext)) {
                     row.innerHTML = `<span>🚫</span><span>${file.name}</span><span style="color:#991b1b">Bilddateien (PNG/JPG/etc.) direkt hochladen wird nicht unterstützt. Speichere als PDF oder Word und lade nochmals hoch.</span>`;
                     listEl.appendChild(row);
                     continue;
                 }
-                row.innerHTML = `<span>📄</span><span>${file.name}</span><span id="status-${file.name}" style="color:#9a9a9a">Wird hochgeladen…</span>`;
+
+                row.innerHTML = `<span>📄</span><span>${file.name}</span><span id="${safeId}" style="color:#9a9a9a">Wird hochgeladen…</span>`;
                 listEl.appendChild(row);
+
                 try {
                     const fd = new FormData();
                     fd.append('file', file);
@@ -1943,43 +2004,52 @@
                     const data = await res.json();
                     if (res.ok) {
                         uploadedFiles.push({ filename: data.filename, text: data.text });
-                        document.getElementById(`status-${file.name}`).textContent = `✓ ${data.chars} Zeichen extrahiert`;
-                        document.getElementById(`status-${file.name}`).style.color = '#166534';
+                        document.getElementById(safeId).textContent = `✓ ${data.chars} Zeichen extrahiert`;
+                        document.getElementById(safeId).style.color = '#166534';
                     } else {
-                        document.getElementById(`status-${file.name}`).textContent = '⚠ Upload fehlgeschlagen';
-                        document.getElementById(`status-${file.name}`).style.color = '#991b1b';
+                        document.getElementById(safeId).textContent = '⚠ Upload fehlgeschlagen';
+                        document.getElementById(safeId).style.color = '#991b1b';
                     }
                 } catch (e) {
-                    document.getElementById(`status-${file.name}`).textContent = '⚠ ' + e.message;
-                    document.getElementById(`status-${file.name}`).style.color = '#991b1b';
+                    document.getElementById(safeId).textContent = '⚠ ' + e.message;
+                    document.getElementById(safeId).style.color = '#991b1b';
                 }
             }
         }
 
+        // ── START WORKFLOW ────────────────────────────────────────────────────────
         async function startWorkflow() {
             const name = document.getElementById('new-project-name').value.trim();
             const desc = document.getElementById('new-project-desc').value.trim();
             if (!name) { alert('Bitte Projektname eingeben.'); return; }
             closeModal();
             currentProject = name;
+            projectDesc = desc;
+            agentOutputHistory = [];
             currentThreadId = null;
             currentAgentIndex = 0;
             currentAgentId = AGENT_IDS['Document Classifier'];
             openChatPage(name, 'Block 1 · Document Classifier', 1, 1);
 
             let msg = `Neues ISDP-Projekt: "${name}".`;
-            if (desc) msg += `\n\nProjektbeschreibung des Nutzers:\n"${desc}"`;
+            if (desc) {
+                msg += `\n\nProjektbeschreibung des Nutzers:\n"${desc}"`;
+            }
 
             if (uploadedFiles.length > 0) {
                 msg += `\n\nDer Nutzer hat ${uploadedFiles.length} Dokument(e) hochgeladen:\n`;
-                for (const f of uploadedFiles) msg += `\n--- ${f.filename} ---\n${f.text}\n`;
+                for (const f of uploadedFiles) {
+                    msg += `\n--- ${f.filename} ---\n${f.text}\n`;
+                }
                 msg += `\n\nAufgabe: Klassifiziere jede der obigen Dateien.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit GENAU 5 Spalten: Nr. | Dateiname | Primärkategorie | ISDP-Relevanz | Begründung\n   - Jedes Dokument = eine Zeile. ISDP-Relevanz: nur "Hoch", "Mittel" oder "Niedrig". Begründung: max. 1 Satz.\n2. Kurze Aufzählung: Fehlende Dokumentkategorien (Backup/BCM, Supplier/SLA, Privacy/DPIA, Logging/SIEM, Governance/Policy etc.)\n3. Empfehlung (2–3 Sätze): Kann der Nutzer mit diesen Dokumenten sinnvoll weiterfahren? Frage direkt: Hat er weitere Dokumente, die er noch hochladen möchte? Oder möchte er mit dem vorhandenen Material fortfahren — mit dem Hinweis, dass fehlende Kategorien zu leeren oder schwach belegten ISDP-Kapiteln führen werden.\n\nWICHTIG: Keine lange Einleitung, keine weiteren Abschnitte ausser den drei oben.`;
             } else {
                 msg += `\n\nDer Nutzer hat noch keine Dokumente hochgeladen.\n\nAufgabe: Stelle dich kurz vor (1–2 Sätze, was du als Document Classifier tust). Erkläre, welche Dokumenttypen für das ISDP besonders wertvoll sind (z.B. Architektur, IAM, Backup/BCM, Datenschutz, Supplier/SLA, Logging, Governance/Policy). Bitte den Nutzer, die relevanten Projektdokumente hochzuladen — er kann dies über den Upload-Button im Chat tun. Falls noch keine Projektbeschreibung vorhanden ist, frage kurz danach.`;
             }
+
             await callAgent(msg);
         }
 
+        // ── OPEN / CLOSE CHAT ─────────────────────────────────────────────────────
         function openChat(title, blockLabel, activeBlock, activeAgent) {
             currentProject = title;
             currentThreadId = null;
@@ -2006,6 +2076,7 @@
             document.getElementById('dashboard-page').style.display = '';
         }
 
+        // ── SEND MESSAGE ──────────────────────────────────────────────────────────
         async function sendMessage() {
             if (isSending) return;
             const input = document.getElementById('chat-input');
@@ -2017,6 +2088,7 @@
             await callAgent(text);
         }
 
+        // ── CORE API CALL ─────────────────────────────────────────────────────────
         async function callAgent(message) {
             if (isSending) return;
             isSending = true;
@@ -2024,31 +2096,45 @@
             showConnecting('Agent is thinking…');
             addTypingIndicator();
             document.getElementById('next-step-card')?.remove();
+
             try {
                 const res = await fetch(`${BACKEND}/api/chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ agent_id: currentAgentId, message, thread_id: currentThreadId || undefined }),
+                    body: JSON.stringify({
+                        agent_id: currentAgentId,
+                        message: message,
+                        thread_id: currentThreadId || undefined,
+                    }),
                 });
+
                 const data = await res.json();
                 removeTypingIndicator();
                 hideConnecting();
+
                 if (!res.ok) {
                     addErrorMessage(data.detail || data.error || `Server error ${res.status}`);
                 } else {
                     if (data.thread_id) currentThreadId = data.thread_id;
                     addAgentMessage(data.response);
+                    const agentName = AGENT_SEQUENCE[currentAgentIndex]?.name || 'Agent';
+                    const existing = agentOutputHistory.findIndex(o => o.name === agentName);
+                    if (existing >= 0) agentOutputHistory[existing].output = data.response;
+                    else agentOutputHistory.push({ name: agentName, output: data.response });
                     addNextStepSuggestion();
                 }
+
             } catch (err) {
                 removeTypingIndicator();
                 hideConnecting();
                 addErrorMessage('Backend not reachable. Is the server running on port 8000?');
             }
+
             isSending = false;
             setSendDisabled(false);
         }
 
+        // ── CHAT FILE UPLOAD ──────────────────────────────────────────────────────
         async function handleChatFiles(files) {
             if (!files.length) return;
             document.getElementById('chat-file-input').value = '';
@@ -2071,26 +2157,43 @@
                 }
             }
             if (!uploads.length) return;
-            let msg = uploads.length === 1 ? `Ich lade ein weiteres Dokument hoch:\n` : `Ich lade ${uploads.length} weitere Dokumente hoch:\n`;
-            for (const f of uploads) msg += `\n--- ${f.filename} (${f.chars} Zeichen) ---\n${f.text}\n`;
+            let msg = uploads.length === 1
+                ? `Ich lade ein weiteres Dokument hoch:\n`
+                : `Ich lade ${uploads.length} weitere Dokumente hoch:\n`;
+            for (const f of uploads) {
+                msg += `\n--- ${f.filename} (${f.chars} Zeichen) ---\n${f.text}\n`;
+            }
             msg += `\nBitte berücksichtige diese Dokumente in deiner Analyse.`;
             addUserMessage(`📎 ${uploads.map(f => f.filename).join(', ')}`);
             await callAgent(msg);
         }
 
+        // ── UI HELPERS ────────────────────────────────────────────────────────────
         function setSendDisabled(v) {
             document.getElementById('send-btn').disabled = v;
             document.getElementById('chat-input').disabled = v;
             document.getElementById('upload-chat-btn').disabled = v;
         }
-        function showConnecting(text) { document.getElementById('conn-text').textContent = text; document.getElementById('connecting-bar').style.display = 'flex'; }
-        function hideConnecting() { document.getElementById('connecting-bar').style.display = 'none'; }
+
+        function showConnecting(text) {
+            document.getElementById('conn-text').textContent = text;
+            document.getElementById('connecting-bar').style.display = 'flex';
+        }
+
+        function hideConnecting() {
+            document.getElementById('connecting-bar').style.display = 'none';
+        }
 
         function addUserMessage(text) {
             const msgs = document.getElementById('chat-messages');
             const el = document.createElement('div');
             el.className = 'msg user';
-            el.innerHTML = `<div class="msg-avatar">Me</div><div class="msg-body"><div class="msg-label">You</div><div class="msg-bubble">${escHtml(text)}</div></div>`;
+            el.innerHTML = `
+        <div class="msg-avatar">Me</div>
+        <div class="msg-body">
+          <div class="msg-label">You</div>
+          <div class="msg-bubble">${escHtml(text)}</div>
+        </div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
         }
@@ -2099,7 +2202,12 @@
             const msgs = document.getElementById('chat-messages');
             const el = document.createElement('div');
             el.className = 'msg agent';
-            el.innerHTML = `<div class="msg-avatar">AI</div><div class="msg-body"><div class="msg-label">ISDP Agent</div><div class="msg-bubble">${renderMarkdown(text)}</div></div>`;
+            el.innerHTML = `
+        <div class="msg-avatar">AI</div>
+        <div class="msg-body">
+          <div class="msg-label">ISDP Agent</div>
+          <div class="msg-bubble">${renderMarkdown(text)}</div>
+        </div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
         }
@@ -2118,16 +2226,31 @@
             const el = document.createElement('div');
             el.className = 'msg agent';
             el.id = 'typing-msg';
-            el.innerHTML = `<div class="msg-avatar">AI</div><div class="msg-body"><div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+            el.innerHTML = `
+        <div class="msg-avatar">AI</div>
+        <div class="msg-body">
+          <div class="typing-bubble">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
         }
-        function removeTypingIndicator() { document.getElementById('typing-msg')?.remove(); }
 
-        function escHtml(str) {
-            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        function removeTypingIndicator() {
+            document.getElementById('typing-msg')?.remove();
         }
 
+        function escHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // ── MARKDOWN RENDERER ─────────────────────────────────────────────────────
         function renderInline(text) {
             let s = escHtml(text);
             s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -2157,7 +2280,10 @@
                 const line = lines[i];
                 if (line.trim().startsWith('|') && line.includes('|')) {
                     const tableLines = [];
-                    while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].includes('|')) { tableLines.push(lines[i]); i++; }
+                    while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].includes('|')) {
+                        tableLines.push(lines[i]);
+                        i++;
+                    }
                     html += renderTable(tableLines);
                     continue;
                 }
@@ -2170,9 +2296,14 @@
                 if (/^\s*[-*] /.test(line)) {
                     html += '<ul>';
                     while (i < lines.length) {
-                        if (/^\s*[-*] /.test(lines[i])) { html += `<li>${renderInline(lines[i].replace(/^\s*[-*] /, ''))}</li>`; i++; }
-                        else if (lines[i].trim() === '' && i + 1 < lines.length && /^\s*[-*] /.test(lines[i + 1])) { i++; }
-                        else { break; }
+                        if (/^\s*[-*] /.test(lines[i])) {
+                            html += `<li>${renderInline(lines[i].replace(/^\s*[-*] /, ''))}</li>`;
+                            i++;
+                        } else if (lines[i].trim() === '' && i + 1 < lines.length && /^\s*[-*] /.test(lines[i + 1])) {
+                            i++;
+                        } else {
+                            break;
+                        }
                     }
                     html += '</ul>';
                     continue;
@@ -2180,9 +2311,14 @@
                 if (/^\s*\d+\. /.test(line)) {
                     html += '<ol>';
                     while (i < lines.length) {
-                        if (/^\s*\d+\. /.test(lines[i])) { html += `<li>${renderInline(lines[i].replace(/^\s*\d+\. /, ''))}</li>`; i++; }
-                        else if (lines[i].trim() === '' && i + 1 < lines.length && /^\s*\d+\. /.test(lines[i + 1])) { i++; }
-                        else { break; }
+                        if (/^\s*\d+\. /.test(lines[i])) {
+                            html += `<li>${renderInline(lines[i].replace(/^\s*\d+\. /, ''))}</li>`;
+                            i++;
+                        } else if (lines[i].trim() === '' && i + 1 < lines.length && /^\s*\d+\. /.test(lines[i + 1])) {
+                            i++;
+                        } else {
+                            break;
+                        }
                     }
                     html += '</ol>';
                     continue;
@@ -2194,6 +2330,7 @@
             return html;
         }
 
+        // ── NEXT STEP SUGGESTION ──────────────────────────────────────────────────
         function addNextStepSuggestion() {
             const nextIdx = currentAgentIndex + 1;
             if (nextIdx >= AGENT_SEQUENCE.length) return;
@@ -2211,7 +2348,9 @@
           </div>
           <div class="next-step-actions">
             <span class="next-step-dismiss" onclick="document.getElementById('next-step-card')?.remove()">Weiter chatten</span>
-            <button class="btn-primary" onclick="advanceToAgent(${nextIdx})">Weiter → ${escHtml(next.name)}</button>
+            <button class="btn-primary" onclick="advanceToAgent(${nextIdx})">
+              Weiter → ${escHtml(next.name)}
+            </button>
           </div>
         </div>`;
             msgs.appendChild(el);
@@ -2224,15 +2363,42 @@
             currentThreadId = null;
             const agent = AGENT_SEQUENCE[idx];
             currentAgentId = AGENT_IDS[agent.name];
+
             document.getElementById('chat-block').textContent = `Block ${agent.block} · ${agent.name}`;
-            updateSidebar(agent.block, idx + 1);
-            for (let b = 1; b <= 5; b++) document.getElementById('sb' + b).style.display = (b === agent.block) ? 'block' : 'none';
+
+            const agentNum = idx + 1;
+            updateSidebar(agent.block, agentNum);
+            for (let b = 1; b <= 5; b++) {
+                document.getElementById('sb' + b).style.display = (b === agent.block) ? 'block' : 'none';
+            }
+
+            let preamble = `Projekt: "${currentProject}"`;
+            if (projectDesc) preamble += `\nProjektbeschreibung: "${projectDesc}"`;
+            if (uploadedFiles.length > 0) {
+                preamble += `\n\nHochgeladene Dokumente (${uploadedFiles.length}):`;
+                for (const f of uploadedFiles) {
+                    const txt = f.text.length > 1500 ? f.text.substring(0, 1500) + '\n[...]' : f.text;
+                    preamble += `\n\n--- ${f.filename} ---\n${txt}`;
+                }
+            }
+            if (agentOutputHistory.length > 0) {
+                preamble += `\n\nBisherige Analyseergebnisse:`;
+                for (const h of agentOutputHistory) {
+                    const txt = h.output.length > 2000 ? h.output.substring(0, 2000) + '\n[...]' : h.output;
+                    preamble += `\n\n=== ${h.name} ===\n${txt}`;
+                }
+            }
+
             const introFn = AGENT_INTROS[idx];
-            const intro = introFn ? introFn(currentProject) : `Wir kommen vom vorherigen ISDP-Schritt. Projekt: "${currentProject}". Bitte erkläre kurz, was du in diesem Schritt (${agent.name}) tun wirst.`;
+            const task = introFn
+                ? introFn(currentProject)
+                : `Bitte erkläre kurz, was du in diesem Schritt (${agent.name}) tun wirst, und beginne direkt.`;
+
             addUserMessage(`→ Weiter zu: ${agent.name}`);
-            callAgent(intro);
+            callAgent(preamble + '\n\n---\n\n' + task);
         }
 
+        // ── SIDEBAR ───────────────────────────────────────────────────────────────
         function updateSidebar(activeBlock, activeAgent) {
             for (let b = 1; b <= 5; b++) {
                 const el = document.getElementById('wn' + b);
