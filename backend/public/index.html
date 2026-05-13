@@ -751,6 +751,37 @@
             font-weight: 500;
         }
 
+        .btn-download-docx {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--white);
+            background: var(--red);
+            border: none;
+            padding: 6px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background 0.15s, opacity 0.15s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-download-docx:hover:not(:disabled) {
+            background: #a50d25;
+        }
+
+        .btn-download-docx:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .btn-download-docx svg {
+            width: 13px;
+            height: 13px;
+        }
+
         .chat-layout {
             flex: 1;
             display: grid;
@@ -1698,6 +1729,12 @@
             </button>
             <div class="chat-project-name" id="chat-title">—</div>
             <span class="chat-block-badge" id="chat-block">—</span>
+            <button class="btn-download-docx" id="btn-download-docx" onclick="downloadDocx()" disabled title="Verfügbar ab Schritt 'German Draft'">
+                <svg viewBox="0 0 14 14" fill="none">
+                    <path d="M7 2v7M4.5 6.5L7 9l2.5-2.5M2 11h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                ISDP als Word
+            </button>
         </div>
 
         <div class="chat-layout">
@@ -1893,23 +1930,23 @@
             // 8: ISDP Section Mapping
             (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Faktenextraktion und Schutzbedarfsanalyse abgeschlossen. Mappe die extrahierten Findings in die richtigen ISDP-Kapitel.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Kap.-Nr. | Kapitelname | Gemappte Finding-IDs | Kernaussagen | Quellenangabe | Mapping-Konfidenz | Offene Inhaltslücken\n2. Gut abgedeckte Kapitel: Aufzählung mit Begründung.\n3. Schwach abgedeckte Kapitel: Aufzählung mit konkreten Lücken.\n4. Nicht zuordbare Findings: Falls vorhanden — welche Findings passen in kein Kapitel?\n\nWICHTIG: Kapitel immer mit Nummer angeben. Quellenangaben immer mit Dateinamen.`,
             // 9: Gap & Conflict Detection
-            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Section-Mapping abgeschlossen. Prüfe das gemappte Material auf Lücken, Widersprüche und schwach belegte Stellen.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Issue-ID | Typ (Lücke/Widerspruch/Ambiguität/Schwache Evidenz/Referenz fehlt/Human-Bestätigung nötig) | Betroffenes Kapitel | Beschreibung | Empfohlene Lösung | Priorität (hoch/mittel/niedrig)\n2. Kritische Issues (Priorität hoch): Zusammenfassung der dringendsten Probleme.\n3. Empfehlung: Was muss vor der Entwurfsphase zwingend geklärt werden?\n\nWICHTIG: Issues nummerieren (GAP-001, CON-001 etc.). Konkrete Kapitelreferenzen angeben.`,
+            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Section-Mapping abgeschlossen. Prüfe das gemappte Material auf Lücken, Widersprüche und schwach belegte Stellen.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Issue-ID | Typ (Lücke/Widerspruch/Ambiguität/Schwache Evidenz/Referenz fehlt/Human-Bestätigung nötig) | Betroffenes Kapitel | Beschreibung | Empfohlene Lösung | Priorität (hoch/mittel/niedrig)\n2. Kritische Issues (Priorität hoch): Zusammenfassung der dringendsten Probleme.\n3. Empfehlung: Was muss vor der Entwurfsphase zwingend geklärt werden?\n\nWICHTIG: Issues nummerieren (GAP-001, CON-001 etc.). Konkrete Kapitelreferenzen angeben. Wenn du ausserhalb der Tabelle auf eine Issue-ID (z.B. GAP-001) verweist, schreibe immer die vollständige Bezeichnung dahinter in Klammern, z.B. "GAP-001 (Fehlende Backup-Strategie)". Abkürzungen beim ersten Auftreten ausschreiben, z.B. "IAM (Identity and Access Management)", "BCM (Business Continuity Management)", "SIEM (Security Information and Event Management)", "DPIA (Datenschutz-Folgenabschätzung)", "AVV (Auftrags-Verarbeitungs-Vertrag)", "nDSG (Neues Datenschutzgesetz)", "MFA (Multi-Faktor-Authentifizierung)", "SLA (Service Level Agreement)", "RTO (Recovery Time Objective)", "RPO (Recovery Point Objective)".`,
             // 10: Clarification Questions
-            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Gap- und Konfliktanalyse abgeschlossen. Formuliere die wichtigsten Klärungsfragen für den Projektverantwortlichen.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Frage-ID | Betroffenes Kapitel | Frage | Warum nötig | Erwartete Antwortform | Zielrolle | Priorität\n2. Kritische Blocker (müssen vor nächstem Schritt beantwortet werden): Aufzählung der Frage-IDs mit 1-Satz-Begründung.\n3. Minimales Fragepaket: Die 3 wichtigsten Fragen, falls der Nutzer nur wenig Zeit hat.\n\nWICHTIG: Fragen nummerieren (Q-001, Q-002 etc.). Keine redundanten Fragen. Jede Frage muss einen konkreten Prozessschritt entsperren.`,
+            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Gap- und Konfliktanalyse abgeschlossen. Formuliere die wichtigsten Klärungsfragen für den Projektverantwortlichen.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Frage-ID | Betroffenes Kapitel | Frage | Warum nötig | Erwartete Antwortform | Zielrolle | Priorität\n2. Kritische Blocker (müssen vor nächstem Schritt beantwortet werden): Aufzählung der Frage-IDs — immer mit vollständiger Beschreibung in Klammern, z.B. "Q-001 (IAM-Rollen-Matrix)".\n3. Minimales Fragepaket: Die 3 wichtigsten Fragen, falls der Nutzer nur wenig Zeit hat.\n\nWICHTIG: Fragen nummerieren (Q-001, Q-002 etc.). Keine redundanten Fragen. Jede Frage muss einen konkreten Prozessschritt entsperren. Abkürzungen beim ersten Auftreten ausschreiben.`,
             // 11: Standards Coverage Check
             (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Mapping und Gap-Analyse abgeschlossen. Prüfe ob das gemappte ISDP-Material die relevanten Kontrollbereiche ausreichend abdeckt.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Kontrollbereich | Relevanzgrad (hoch/mittel/niedrig) | Coverage-Status (ausreichend/teilweise/schwach/keine Evidenz/nicht anwendbar) | Betroffene ISDP-Kapitel | Empfohlener nächster Schritt\n2. Kritische Coverage-Lücken: Welche hochrelevanten Bereiche sind schwach abgedeckt?\n3. Gesamtbewertung: Kann mit der Entwurfsphase begonnen werden, oder braucht es zuerst mehr Input?\n\nWICHTIG: Kontrollbereiche mit Standard-Referenzen versehen (z.B. ISO 27001 A.9).`,
             // 12: Evidence Validation
             (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Standards-Coverage-Check abgeschlossen. Validiere, ob die extrahierten und gemappten Aussagen durch die Quelldokumente belegt sind.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Validierungs-ID | Aussage | Status (belegt/teilweise/schwach/unbelegt/widersprüchlich) | Quellenangabe (Dateiname) | Begründung | Empfohlene Aktion\n2. Gut belegte Bereiche: Aufzählung.\n3. Problematische Aussagen: Welche müssen vor dem Entwurf bereinigt oder bestätigt werden?\n\nWICHTIG: Jede Validierung mit konkreter Quellenangabe. Keine generischen Aussagen.`,
             // 13: German Draft Generation
-            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Validation abgeschlossen. Erstelle strukturierte deutsche ISDP-Kapitelentwürfe auf Basis der validierten Findings.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Pro Kapitel (mindestens 5): **Kap. X.X – [Titel]**\n   - Entwurfstext (formell, governance-orientiert, fact-basiert — kein Chatbot-Stil)\n   - Verwendete Finding-IDs: ...\n   - Offene Punkte: ... (falls vorhanden)\n2. Gut befüllte Kapitel: Aufzählung.\n3. Kapitel mit offenen Punkten: Wo ist Human Review besonders wichtig?\n\nWICHTIG: Kapitel mit Nummer und Titel. Formelle Sprache — keine Chatbot-Floskeln. Ausschliesslich Deutsch.`,
+            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Validation abgeschlossen. Erstelle strukturierte deutsche ISDP-Kapitelentwürfe auf Basis der validierten Findings.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Pro Kapitel (mindestens 5): **Kap. X.X – [Titel]**\n   - Entwurfstext (formell, governance-orientiert, fact-basiert — kein Chatbot-Stil)\n   - Verwendete Finding-IDs: ...\n   - Offene Punkte: ... (falls vorhanden)\n2. Gut befüllte Kapitel: Aufzählung.\n3. Kapitel mit offenen Punkten: Wo ist Human Review besonders wichtig?\n\nWICHTIG: Kapitel mit Nummer und Titel. Formelle Sprache — keine Chatbot-Floskeln. Ausschliesslich Deutsch. Alle Abkürzungen beim ersten Auftreten im Text ausschreiben, z.B. "IAM (Identity and Access Management)", "MFA (Multi-Faktor-Authentifizierung)", "DPIA (Datenschutz-Folgenabschätzung)", "BCM (Business Continuity Management)", "SIEM (Security Information and Event Management)", "AVV (Auftrags-Verarbeitungs-Vertrag)", "SLA (Service Level Agreement)", "nDSG (Neues Datenschutzgesetz)", "RTO (Recovery Time Objective)", "RPO (Recovery Point Objective)". Finding-IDs immer mit Kurzbeschreibung, z.B. "F-01 (Systemname/Zweck)".`,
             // 14: Quality Assurance
             (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Deutsche Entwürfe generiert. Prüfe die Qualität der Kapitelentwürfe.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: QA-ID | Betroffenes Kapitel | Problemtyp (vage/generisch/Wiederholung/oberflächlich/inkonsistent) | Problematische Stelle | Warum schwach | Empfohlene Aktion | Priorität\n2. Grösste Qualitätsschwächen: Aufzählung der 3 kritischsten Probleme.\n3. Riskante Kapitel: Welche Kapitel sind für das Endprodukt besonders problematisch?\n4. Starke Kapitel: Was ist bereits gut und muss nicht mehr überarbeitet werden?\n\nWICHTIG: Konkrete Textstellen zitieren, nicht generisch beschreiben. Priorität klar benennen.`,
             // 15: Feedback Integration
-            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". QA-Review abgeschlossen. Verarbeite das Expertenfeedback und integriere Korrekturen.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Feedback-ID | Betroffenes Kapitel/Thema | Feedbacktyp (redaktionell/faktisch/neue Info/Scope-Änderung/Bestätigung) | Zusammenfassung | Empfohlene Aktion | Braucht Re-Run? | Zielagent falls Re-Run | Status\n2. Kritische Änderungen: Welche Feedback-Items haben den grössten Einfluss auf das Ergebnis?\n3. Sofortmassnahmen: Was kann direkt integriert werden ohne weiteren Agent-Durchlauf?\n\nWICHTIG: Feedback-Items nummerieren (FB-001 etc.). Status klar angeben (offen/integriert/zurückgestellt).`,
+            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". QA-Review abgeschlossen. Verarbeite das Expertenfeedback und integriere Korrekturen.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit Spalten: Feedback-ID | Betroffenes Kapitel/Thema | Feedbacktyp (redaktionell/faktisch/neue Info/Scope-Änderung/Bestätigung) | Zusammenfassung | Empfohlene Aktion | Braucht Re-Run? | Zielagent falls Re-Run | Status\n2. Kritische Änderungen: Welche Feedback-Items haben den grössten Einfluss auf das Ergebnis?\n3. Sofortmassnahmen: Was kann direkt integriert werden ohne weiteren Agent-Durchlauf?\n\nWICHTIG: Feedback-Items nummerieren (FB-001 etc.). Status klar angeben (offen/integriert/zurückgestellt). KRITISCH: Wenn du ausserhalb der Tabelle (in Abschnitt 2, 3 oder am Ende) auf Feedback-IDs verweist, schreibe IMMER die vollständige Beschreibung in Klammern dahinter, z.B. "FB-001 (IAM-Rollen-Matrix & Admin-Genehmigungs-Workflow)", "FB-002 (Logging/SIEM – Log-Quellen & Aufbewahrungsdauer)", "FB-003 (Backup & BCM – Plan, RPO/RTO, Test-Restore)", "FB-004 (Datenschutz/DPIA – AVV, Lösch-Procedures)", "FB-006 (Risikomanagement – Risiko-Register nach ISO 27005)", "FB-007 (Architektur – Betriebs- & Patch-Management)". Niemals nur "FB-001" ohne Kontext schreiben.`,
             // 16: Quality Scoring
             (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Feedback integriert. Erstelle ein strukturiertes Quality-Scoring für das ISDP-Paket.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Scoring-Tabelle: Dimension | Score (0–100) | Begründung | Hauptschwäche\n   Dimensionen: Vollständigkeit, Evidenzstärke, Klarheit, Spezifität, Konsistenz, Standards-Coverage.\n2. Gesamtbewertung: Gesamt-Score (0–100) mit Bandbreite (schwach <60 / akzeptabel 60–79 / stark ≥80) und Open-Issues-Last (niedrig/mittel/hoch).\n3. Haupttreiber: Was hat den Score am stärksten beeinflusst (positiv und negativ)?\n4. Empfehlung: Weiter zum Final Review / Mit Vorsicht weiter / Zuerst überarbeiten — mit Begründung.\n\nWICHTIG: Scores müssen durch konkrete Beobachtungen begründet sein. Kein Englisch.`,
             // 17: Final Review
-            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Quality-Scoring abgeschlossen. Führe das finale Review-Gate durch.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Gate-Checkliste: Markdown-Tabelle mit Spalten: Kriterium | Status (erfüllt/teilweise/nicht erfüllt) | Bemerkung\n   Kriterien: Alle Pflichtkapitel vorhanden, Offene Issues dokumentiert, Evidenz/Traceability vorhanden, Human-Feedback integriert, Qualitätsscore akzeptabel, Sprachqualität (Deutsch, formell), Konsistenz über alle Kapitel.\n2. Gate-Entscheid: **Bereit für Handoff** / **Bereit mit offenen Punkten** / **Noch nicht bereit** — mit 2–3 Sätzen Begründung.\n3. Was ist gut: Aufzählung der Stärken.\n4. Was bleibt riskant: Aufzählung der Restrisiken.\n5. Handoff-Empfehlung: An wen geht das Paket, und was muss der Empfänger wissen?\n\nWICHTIG: Gate-Entscheid klar und ohne Doppeldeutigkeit formulieren.`,
+            (p) => `SPRACHE: Antworte ausschliesslich auf Deutsch. Kein Englisch.\n\nProjekt: "${p}". Quality-Scoring abgeschlossen. Führe das finale Review-Gate durch.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Gate-Checkliste: Markdown-Tabelle mit Spalten: Kriterium | Status (erfüllt/teilweise/nicht erfüllt) | Bemerkung\n   Kriterien: Alle Pflichtkapitel vorhanden, Offene Issues dokumentiert, Evidenz/Traceability vorhanden, Human-Feedback integriert, Qualitätsscore akzeptabel, Sprachqualität (Deutsch, formell), Konsistenz über alle Kapitel.\n2. Gate-Entscheid: **Bereit für Handoff** / **Bereit mit offenen Punkten** / **Noch nicht bereit** — mit 2–3 Sätzen Begründung.\n3. Was ist gut: Aufzählung der Stärken.\n4. Was bleibt riskant: Aufzählung der Restrisiken — offene Punkte immer mit vollständiger Beschreibung benennen, nie nur als ID-Kürzel.\n5. Handoff-Empfehlung: An wen geht das Paket, und was muss der Empfänger wissen?\n\nWICHTIG: Gate-Entscheid klar und ohne Doppeldeutigkeit formulieren. Alle Abkürzungen beim ersten Auftreten ausschreiben. Alle Referenz-IDs (GAP-xxx, FB-xxx, Q-xxx) immer mit vollem Thema in Klammern schreiben.`,
         ];
 
         // ── AGENT SEQUENCE (ordered workflow) ────────────────────────────────────
@@ -2125,6 +2162,7 @@
                     const existing = agentOutputHistory.findIndex(o => o.name === agentName);
                     if (existing >= 0) agentOutputHistory[existing].output = data.response;
                     else agentOutputHistory.push({ name: agentName, output: data.response });
+                    updateDownloadButton();
                     addNextStepSuggestion();
                 }
 
@@ -2223,6 +2261,53 @@
             el.innerHTML = `<div class="msg-bubble">⚠ ${escHtml(text)}</div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        // ── DOCX DOWNLOAD ─────────────────────────────────────────────────────────
+        async function downloadDocx() {
+            const btn = document.getElementById('btn-download-docx');
+            const origText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.4" stroke-dasharray="20" stroke-dashoffset="10"/></svg> Wird erstellt…';
+            try {
+                const res = await fetch(`${BACKEND}/api/generate-docx`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        project_name: currentProject || 'ISDP',
+                        agent_outputs: agentOutputHistory,
+                    }),
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    addErrorMessage(`Word-Export fehlgeschlagen: ${err.detail || res.status}`);
+                    return;
+                }
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const safeName = (currentProject || 'ISDP').replace(/[^\w\-]/g, '_');
+                a.download = `ISDP_${safeName}.docx`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                addErrorMessage(`Word-Export fehlgeschlagen: ${e.message}`);
+            } finally {
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
+        }
+
+        function updateDownloadButton() {
+            // Enable download once German Draft output is available
+            const hasDraft = agentOutputHistory.some(o => o.name === 'German Draft');
+            const btn = document.getElementById('btn-download-docx');
+            if (!btn) return;
+            btn.disabled = !hasDraft;
+            btn.title = hasDraft
+                ? 'ISDP als Word-Dokument herunterladen'
+                : "Verfügbar ab Schritt 'German Draft'";
         }
 
         function addTypingIndicator() {
