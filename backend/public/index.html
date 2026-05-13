@@ -1022,8 +1022,8 @@
             resize: none;
             outline: none;
             transition: border-color 0.15s;
-            min-height: 42px;
-            max-height: 120px;
+            min-height: 80px;
+            max-height: 200px;
             line-height: 1.5;
         }
 
@@ -1353,22 +1353,27 @@
 
         /* CHAT UPLOAD BUTTON */
         .upload-chat-btn {
-            width: 42px;
-            height: 42px;
+            height: 80px;
+            width: 110px;
             background: var(--white);
-            border: 1px solid var(--grey-200);
+            border: 1.5px dashed var(--grey-200);
             border-radius: var(--radius);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 5px;
             cursor: pointer;
             flex-shrink: 0;
             transition: border-color 0.15s, background 0.15s, color 0.15s;
             color: var(--grey-600);
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 500;
         }
 
         .upload-chat-btn:hover {
-            border-color: var(--red-mid);
+            border-color: var(--red);
             background: var(--red-light);
             color: var(--red);
         }
@@ -1379,8 +1384,8 @@
         }
 
         .upload-chat-btn svg {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
         }
 
         /* ANIMATIONS */
@@ -1800,12 +1805,13 @@
                                 stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
                                 stroke-linejoin="round" />
                         </svg>
+                        Datei hochladen
                     </button>
                     <input type="file" id="chat-file-input" multiple accept=".pdf,.docx,.doc,.txt,.md"
                         style="display:none" onchange="handleChatFiles(this.files)">
                     <textarea class="chat-input" id="chat-input" placeholder="Type your message…" rows="1"
                         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
-                        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+                        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,200)+'px'"></textarea>
                     <button class="send-btn" id="send-btn" onclick="sendMessage()">
                         <svg viewBox="0 0 16 16" fill="none">
                             <path d="M14 2L2 7l5 1.5L14 2zM7 8.5L9 14l5-12" stroke="white" stroke-width="1.4"
@@ -1867,10 +1873,9 @@
         let uploadedFiles = [];   // [{filename, text}]
 
         // ── AGENT-SPECIFIC INTRO MESSAGES ────────────────────────────────────────
-        // Called when advancing to a new agent. p = project name.
         const AGENT_INTROS = [
             // 0: Document Classifier
-            (p) => `Projekt: "${p}". Klassifiziere die hochgeladenen Dokumente. Gib eine kompakte Tabelle mit Spalten: Nr. | Dateiname | Kategorie | ISDP-Relevanz (Hoch / Mittel / Niedrig) | Begründung (max. 1 Satz). Dann kurz: welche Dokumentkategorien fehlen (z.B. Backup, Supplier, Governance). Keine weiteren Analysen in diesem Schritt.`,
+            (p) => `Projekt: "${p}". Klassifiziere die hochgeladenen Dokumente.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit GENAU 5 Spalten: Nr. | Dateiname | Primärkategorie | ISDP-Relevanz | Begründung\n   - Jedes Dokument = eine Zeile. ISDP-Relevanz: nur "Hoch", "Mittel" oder "Niedrig". Begründung: max. 1 Satz aus dem Dokumentinhalt.\n2. Kurze Aufzählung: Fehlende Dokumentkategorien (Backup/BCM, Supplier/SLA, Privacy/DPIA, Logging/SIEM, Governance/Policy etc.)\n\nWICHTIG: Keine Einleitung, keine Zusammenfassung, keine Next-Steps, keine weiteren Abschnitte. Nur Tabelle + Fehlende Kategorien.`,
             // 1: Document Readiness
             (p) => `Projekt: "${p}". Die Dokumente wurden klassifiziert. Prüfe das gesamte Dokumentenpaket auf Vollständigkeit und Qualität. Gib zurück: Gesamtstatus (bereit / teilweise bereit / nicht bereit), verfügbare Bereiche, schwache oder fehlende Kategorien, Qualitätsprobleme, Empfehlung für das weitere Vorgehen. Kompakt und strukturiert.`,
             // 2: Scope Clarification
@@ -1954,7 +1959,7 @@
         // ── STATE ─────────────────────────────────────────────────────────────────
         let currentThreadId = null;
         let currentAgentId = AGENT_IDS['Document Classifier'];
-        let currentAgentIndex = 0;   // index into AGENT_SEQUENCE
+        let currentAgentIndex = 0;
         let currentProject = null;
         let isSending = false;
 
@@ -2009,14 +2014,13 @@
             currentAgentId = AGENT_IDS['Document Classifier'];
             openChatPage(name, 'Block 1 · Document Classifier', 1, 1);
 
-            // Build opening message — include extracted file content if any
             let msg = `Neues ISDP-Projekt: "${name}".`;
             if (uploadedFiles.length > 0) {
                 msg += `\n\nDer Nutzer hat folgende Dokumente hochgeladen:\n`;
                 for (const f of uploadedFiles) {
                     msg += `\n--- ${f.filename} ---\n${f.text}\n`;
                 }
-                msg += `\n\nBitte klassifiziere jede Datei. Ausgabe: eine kompakte Tabelle mit Spalten Nr. | Dateiname | Kategorie | ISDP-Relevanz (Hoch / Mittel / Niedrig) | Begründung (max. 1 Satz). Danach eine kurze Liste der fehlenden Dokumentkategorien (z.B. Backup, Supplier, Governance — falls nicht vorhanden). Keine weiteren Analysen, keine langen Erklärungen.`;
+                msg += `\n\nAufgabe: Klassifiziere jede der obigen Dateien.\n\nAUSGABEFORMAT (strikt einhalten):\n1. Markdown-Tabelle mit GENAU 5 Spalten: Nr. | Dateiname | Primärkategorie | ISDP-Relevanz | Begründung\n   - Jedes hochgeladene Dokument = eine Zeile\n   - ISDP-Relevanz: nur "Hoch", "Mittel" oder "Niedrig"\n   - Begründung: max. 1 Satz, direkt aus dem Dokumentinhalt abgeleitet\n2. Kurze Aufzählung: Fehlende Dokumentkategorien (z.B. Backup/BCM, Supplier/SLA, Privacy/DPIA, Logging/SIEM, Governance/Policy)\n\nWICHTIG: Keine Einleitung. Keine Zusammenfassung. Keine "Next steps". Keine weiteren Abschnitte. Nur Tabelle + Fehlende Kategorien.`;
             } else {
                 msg += ` Bitte stelle dich vor und frage nach dem System, für das ein ISDP erstellt werden soll.`;
             }
@@ -2269,7 +2273,7 @@
                             html += `<li>${renderInline(lines[i].replace(/^\s*[-*] /, ''))}</li>`;
                             i++;
                         } else if (lines[i].trim() === '' && i + 1 < lines.length && /^\s*[-*] /.test(lines[i + 1])) {
-                            i++; // skip single blank line between items
+                            i++;
                         } else {
                             break;
                         }
@@ -2336,17 +2340,14 @@
             const agent = AGENT_SEQUENCE[idx];
             currentAgentId = AGENT_IDS[agent.name];
 
-            // Update topbar badge
             document.getElementById('chat-block').textContent = `Block ${agent.block} · ${agent.name}`;
 
-            // Update sidebar
             const agentNum = idx + 1;
             updateSidebar(agent.block, agentNum);
             for (let b = 1; b <= 5; b++) {
                 document.getElementById('sb' + b).style.display = (b === agent.block) ? 'block' : 'none';
             }
 
-            // Greeting message to new agent — use agent-specific intro if available
             const introFn = AGENT_INTROS[idx];
             const intro = introFn
                 ? introFn(currentProject)
