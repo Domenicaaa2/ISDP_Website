@@ -141,7 +141,7 @@ async def run_wxo(
 
     logger.info("Run started: %s  thread: %s", current_run_id, returned_thread_id)
 
-    for i in range(120):
+    for i in range(200):
         await asyncio.sleep(1)
         poll = await client.get(
             f"{WXO_URL}/v1/orchestrate/runs/{current_run_id}", headers=headers
