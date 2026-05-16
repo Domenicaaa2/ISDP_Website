@@ -652,3 +652,7 @@ async def generate_docx(data: DocxRequest):
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+# ── Serve frontend (must be last) ─────────────────────────────────────────────
+app.mount("/", StaticFiles(directory="public", html=True), name="static")
