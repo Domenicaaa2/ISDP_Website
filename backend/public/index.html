@@ -991,6 +991,22 @@
             border-radius: 12px;
         }
 
+        .msg.flow-warn { justify-content: center; padding: 4px 0; }
+        .flow-warn-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #78350f;
+            max-width: 640px;
+            line-height: 1.5;
+        }
+        .flow-warn-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
         .typing-bubble {
             padding: 10px 14px;
             background: var(--white);
@@ -2156,13 +2172,20 @@
                     addErrorMessage(data.detail || data.error || `Server error ${res.status}`);
                 } else {
                     if (data.thread_id) currentThreadId = data.thread_id;
-                    addAgentMessage(data.response);
-                    // Persist this agent's latest output for context hand-off to next agent
-                    const agentName = AGENT_SEQUENCE[currentAgentIndex]?.name || 'Agent';
-                    const existing = agentOutputHistory.findIndex(o => o.name === agentName);
-                    if (existing >= 0) agentOutputHistory[existing].output = data.response;
-                    else agentOutputHistory.push({ name: agentName, output: data.response });
-                    updateDownloadButton();
+
+                    const isFlowMsg = data.response && data.response.includes('A new flow has started');
+                    if (isFlowMsg) {
+                        addFlowWarning();
+                        // Do NOT store in agentOutputHistory — pollutes subsequent agent context
+                    } else {
+                        addAgentMessage(data.response);
+                        // Persist this agent's latest output for context hand-off to next agent
+                        const agentName = AGENT_SEQUENCE[currentAgentIndex]?.name || 'Agent';
+                        const existing = agentOutputHistory.findIndex(o => o.name === agentName);
+                        if (existing >= 0) agentOutputHistory[existing].output = data.response;
+                        else agentOutputHistory.push({ name: agentName, output: data.response });
+                        updateDownloadButton();
+                    }
                     addNextStepSuggestion();
                 }
 
@@ -2259,6 +2282,26 @@
             const el = document.createElement('div');
             el.className = 'msg error';
             el.innerHTML = `<div class="msg-bubble">⚠ ${escHtml(text)}</div>`;
+            msgs.appendChild(el);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function addFlowWarning() {
+            const agentName = AGENT_SEQUENCE[currentAgentIndex]?.name || 'Agent';
+            const msgs = document.getElementById('chat-messages');
+            const el = document.createElement('div');
+            el.className = 'msg flow-warn';
+            el.innerHTML = `
+        <div class="msg-body" style="width:100%">
+          <div class="flow-warn-card">
+            <span class="flow-warn-icon">⚙</span>
+            <div>
+              <strong>${escHtml(agentName)}</strong> ist als WatsonX-Flow konfiguriert.<br>
+              Dieser Agent-Typ liefert keine direkte API-Antwort. Bitte den Agenten in Watson&nbsp;Orchestrate
+              von «Skill&nbsp;Flow» auf «Conversational» umstellen — oder den nächsten Schritt überspringen.
+            </div>
+          </div>
+        </div>`;
             msgs.appendChild(el);
             msgs.scrollTop = msgs.scrollHeight;
         }

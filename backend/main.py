@@ -154,7 +154,9 @@ async def run_wxo(
 
     logger.info("Run started: %s  thread: %s", current_run_id, returned_thread_id)
 
-    for i in range(200):
+    _FLOW_MARKER = "A new flow has started"
+
+    for i in range(400):
         await asyncio.sleep(1)
         poll = await client.get(
             f"{WXO_URL}/v1/orchestrate/runs/{current_run_id}", headers=headers
@@ -172,15 +174,25 @@ async def run_wxo(
         if status == "completed":
             content = result["result"]["data"]["message"]["content"]
             chunk = " ".join(c.get("text", "") for c in content if isinstance(c, dict))
-            accumulated_text += chunk
             next_run_id: Optional[str] = result["result"].get("next_run_id")
+            logger.info("Completed chunk (len=%d) next_run_id=%s", len(chunk), next_run_id)
+
+            # WXO skill-flow agents emit a transient "A new flow has started" message
+            # when the flow is still running. Only accumulate real content.
+            if _FLOW_MARKER not in chunk:
+                accumulated_text += chunk
+
             if next_run_id:
                 current_run_id = next_run_id
                 logger.info("Continuing with next_run_id: %s", next_run_id)
             else:
+                if not accumulated_text and _FLOW_MARKER in chunk:
+                    # Flow agent returned only the marker with no follow-up run — surface it
+                    # so the frontend can show a meaningful info message.
+                    return returned_thread_id, chunk
                 return returned_thread_id, accumulated_text
 
-    raise HTTPException(504, "Run timed out after 120 seconds")
+    raise HTTPException(504, "Run timed out after 400 seconds")
 
 
 # ── API endpoints ─────────────────────────────────────────────────────────────
@@ -189,7 +201,7 @@ async def run_wxo(
 async def chat(req: ChatRequest):
     token = await get_token()
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=10.0)) as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(420.0, connect=10.0)) as client:
         thread_id, response_text = await run_wxo(
             client, headers, req.agent_id, req.message, req.thread_id
         )
