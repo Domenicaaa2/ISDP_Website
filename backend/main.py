@@ -584,6 +584,15 @@ def build_isdp_docx(project_name: str, agent_outputs: list[dict]) -> io.BytesIO:
     doc.styles["Normal"].font.name = "Calibri"
     doc.styles["Normal"].font.size = Pt(10.5)
 
+    # Collect outputs; skip empty / flow-marker placeholders
+    _FLOW_MARKER = "A new flow has started"
+    output_map: dict[str, str] = {}
+    for o in agent_outputs:
+        name = o.get("name", "")
+        text = o.get("output", "").strip()
+        if text and _FLOW_MARKER not in text and len(text) > 30:
+            output_map[name] = text
+
     # 1. Cover page
     _cover_page(doc, project_name)
 
@@ -591,55 +600,104 @@ def build_isdp_docx(project_name: str, agent_outputs: list[dict]) -> io.BytesIO:
     _revision_table(doc)
     doc.add_page_break()
 
-    # 3. Find and render German Draft content first (main body)
-    output_map = {o["name"]: o["output"] for o in agent_outputs}
+    # 3. Workflow status overview
+    all_agents = [
+        "Document Classifier", "Document Readiness", "Scope Clarification",
+        "Reference & Reuse", "ISDP Template", "Standards Relevance",
+        "Security Extraction", "Schutzedarfsanalyse", "ISDP Section Mapping",
+        "Gap & Conflict Detection", "Clarification Questions", "Standards Coverage",
+        "Evidence Validation", "German Draft", "Quality Assurance",
+        "Feedback Integration", "Quality Scoring", "Final Review",
+    ]
+    doc.add_heading("Workflow-Status", level=1)
+    status_tbl = doc.add_table(rows=len(all_agents) + 1, cols=2)
+    status_tbl.style = "Table Grid"
+    for col, lbl in enumerate(["Workflow-Schritt", "Status"]):
+        _set_cell_bg(status_tbl.cell(0, col), "C8102E")
+        r = status_tbl.cell(0, col).paragraphs[0].add_run(lbl)
+        r.bold = True; r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF); r.font.size = Pt(9)
+    for row_idx, agent in enumerate(all_agents, start=1):
+        status_tbl.cell(row_idx, 0).paragraphs[0].add_run(agent).font.size = Pt(9)
+        done = agent in output_map
+        status_cell = status_tbl.cell(row_idx, 1)
+        sr = status_cell.paragraphs[0].add_run("✓ Abgeschlossen" if done else "– Ausstehend")
+        sr.font.size = Pt(9)
+        sr.font.color.rgb = RGBColor(0x16, 0x65, 0x34) if done else RGBColor(0x9A, 0x9A, 0x9A)
+    doc.add_paragraph()
+    doc.add_page_break()
 
-    # Main ISDP chapters from German Draft
+    # Helper: write a section only if output exists
+    def _section(heading: str, key: str, level: int = 1, base: int = 2):
+        text = output_map.get(key, "")
+        if not text:
+            return
+        doc.add_heading(heading, level=level)
+        _parse_markdown_section(doc, text, base_level=base)
+        doc.add_page_break()
+
+    # 4. Scope & System Overview
+    _section("Scope & System-Übersicht", "Scope Clarification", level=1, base=2)
+
+    # 5. ISDP – Kapitelentwürfe (main body — from German Draft)
     german_draft = output_map.get("German Draft", "")
+    doc.add_heading("ISDP – Kapitelentwürfe", level=1)
     if german_draft:
-        doc.add_heading("ISDP – Kapitelentwürfe", level=1)
-        _parse_markdown_section(doc, german_draft, base_level=1)
-        doc.add_page_break()
+        _parse_markdown_section(doc, german_draft, base_level=2)
     else:
-        doc.add_heading("ISDP – Kapitelentwürfe", level=1)
-        doc.add_paragraph(
-            "Die deutschen Kapitelentwürfe wurden noch nicht generiert. "
-            "Bitte führen Sie zuerst den Schritt 'German Draft' durch."
+        p = doc.add_paragraph(
+            "⚠  Die deutschen Kapitelentwürfe (Schritt «German Draft») stehen noch nicht zur Verfügung. "
+            "Dieser Agent ist in WatsonX Orchestrate als Skill-Flow konfiguriert und muss auf "
+            "«Conversational» umgestellt werden. Alle anderen verfügbaren Analyseergebnisse sind in "
+            "den nachfolgenden Abschnitten dieses Dokuments enthalten."
         )
-        doc.add_page_break()
+        p.runs[0].font.color.rgb = RGBColor(0x78, 0x35, 0x0F)
+        p.runs[0].font.size = Pt(10)
+    doc.add_page_break()
 
-    # 4. Schutzbedarfsanalyse
-    sba = output_map.get("Schutzedarfsanalyse", "")
-    if sba:
-        doc.add_heading("Schutzbedarfsanalyse", level=1)
-        _parse_markdown_section(doc, sba, base_level=2)
-        doc.add_page_break()
+    # 6. ISDP Template / Chapter Structure
+    _section("ISDP-Zielstruktur", "ISDP Template", level=1, base=2)
 
-    # 5. GAP-Register from Gap & Conflict Detection
-    gap = output_map.get("Gap & Conflict Detection", "")
-    if gap:
-        doc.add_heading("GAP- und Konflikt-Register", level=1)
-        _parse_markdown_section(doc, gap, base_level=2)
-        doc.add_page_break()
+    # 7. Standards & Controls
+    _section("Standards-Relevanz", "Standards Relevance", level=1, base=2)
+    _section("Standards-Coverage-Check", "Standards Coverage", level=1, base=2)
 
-    # 6. Security Findings
-    sec = output_map.get("Security Extraction", "")
-    if sec:
-        doc.add_heading("Security-Findings-Übersicht", level=1)
-        _parse_markdown_section(doc, sec, base_level=2)
-        doc.add_page_break()
+    # 8. Security Findings
+    _section("Security-Findings (extrahiert)", "Security Extraction", level=1, base=2)
 
-    # 7. Quality Score
-    qs = output_map.get("Quality Scoring", "")
-    if qs:
-        doc.add_heading("Qualitäts-Scoring", level=1)
-        _parse_markdown_section(doc, qs, base_level=2)
-        doc.add_page_break()
+    # 9. Schutzbedarfsanalyse
+    _section("Schutzbedarfsanalyse", "Schutzedarfsanalyse", level=1, base=2)
 
-    # 8. Glossary
+    # 10. ISDP Section Mapping
+    _section("ISDP-Section-Mapping", "ISDP Section Mapping", level=1, base=2)
+
+    # 11. GAP- and Conflict Register
+    _section("GAP- und Konflikt-Register", "Gap & Conflict Detection", level=1, base=2)
+
+    # 12. Clarification Questions
+    _section("Klärungsfragen an das Projektteam", "Clarification Questions", level=1, base=2)
+
+    # 13. Evidence Validation
+    _section("Evidenz-Validierung", "Evidence Validation", level=1, base=2)
+
+    # 14. Quality Assurance
+    _section("Qualitätssicherung (QA-Review)", "Quality Assurance", level=1, base=2)
+
+    # 15. Feedback Integration
+    _section("Feedback-Integration", "Feedback Integration", level=1, base=2)
+
+    # 16. Quality Scoring
+    _section("Qualitäts-Scoring", "Quality Scoring", level=1, base=2)
+
+    # 17. Final Review
+    _section("Final-Review-Gate", "Final Review", level=1, base=2)
+
+    # 18. Reference & Reuse (lower priority — put at end)
+    _section("Referenz- und Wiederverwendungsanalyse", "Reference & Reuse", level=1, base=2)
+
+    # 19. Glossary
     _glossary_section(doc)
 
-    # 9. Feedback register
+    # 20. Feedback register (open items)
     _feedback_register(doc, {})
 
     buf = io.BytesIO()

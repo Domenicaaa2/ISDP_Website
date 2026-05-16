@@ -2343,14 +2343,19 @@
         }
 
         function updateDownloadButton() {
-            // Enable download once German Draft output is available
             const hasDraft = agentOutputHistory.some(o => o.name === 'German Draft');
+            const meaningfulCount = agentOutputHistory.filter(o => o.output && o.output.length > 100).length;
+            const hasEnough = meaningfulCount >= 3;
             const btn = document.getElementById('btn-download-docx');
             if (!btn) return;
-            btn.disabled = !hasDraft;
-            btn.title = hasDraft
-                ? 'ISDP als Word-Dokument herunterladen'
-                : "Verfügbar ab Schritt 'German Draft'";
+            btn.disabled = !(hasDraft || hasEnough);
+            if (hasDraft) {
+                btn.title = 'ISDP als Word-Dokument herunterladen';
+            } else if (hasEnough) {
+                btn.title = `Word-Export (${meaningfulCount} Schritte abgeschlossen, German Draft noch ausstehend)`;
+            } else {
+                btn.title = 'Verfügbar ab 3 abgeschlossenen Workflow-Schritten';
+            }
         }
 
         function addTypingIndicator() {
